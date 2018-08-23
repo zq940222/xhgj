@@ -10,10 +10,10 @@ namespace app\admin\controller;
 
 
 
+use app\admin\model\Device;
+use app\admin\model\DeviceLog;
+use app\admin\model\Passageway;
 use app\admin\model\Projects;
-use app\library\AdminException;
-use think\Exception;
-use think\exception\HttpException;
 
 class SystemOverview extends BaseController
 {
@@ -41,6 +41,7 @@ class SystemOverview extends BaseController
                 $count += 1;
             }
             $data[] = [
+                'id' => $value['id'],
                 'project_name' => $value['project_name'],
                 'device_count' => $count,
                 'build_start_time' => $value['build_start_time'],
@@ -79,6 +80,7 @@ class SystemOverview extends BaseController
             if ($status == 1)
             {
                 $data[] = [
+                    'id' => $value['id'],
                     'project_name' => $value['project_name'],
                     'device_exception_count' => $count,
                     'longitude' => $value['longitude'],
@@ -89,11 +91,82 @@ class SystemOverview extends BaseController
         return $this->success('请求成功','',$data);
     }
 
+    /**
+     * @desc 项目建设
+     * @param int $page
+     * @param int $size
+     * @throws \think\exception\DbException
+     */
     public function projectConstruction($page = 1,$size = 10)
     {
         $data = Projects::order('build_start_time desc')
             ->paginate($size,false,['page'=> $page]);
 
+        return $this->success('请求成功','',$data);
+    }
+
+    /**
+     * @desc 站点列表
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function siteList()
+    {
+        $projectID = input('get.project_id/d',0);
+        $data = Device::where('project_id',$projectID)
+            ->field(['device_id','device_name','install_last_time','maintain_last_worker','longitude','latitude','status'])
+            ->select();
+        return $this->success('请求成功','',$data);
+    }
+
+    /**
+     * @desc 站点报警列表
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function siteAlarmList()
+    {
+        $projectID = input('get.project_id/d',0);
+        $data = Device::where('project_id',$projectID)->where('status','neq',0)
+            ->field(['device_id','device_name','longitude','latitude','status'])
+            ->select();
+        return $this->success('请求成功','',$data);
+    }
+
+    /**
+     * @desc 通道列表
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function channelList()
+    {
+        $deviceID = input('get.device_id/s','');
+        $data = Passageway::where('device_id',$deviceID)
+            ->select();
+        return $this->success('请求成功','',$data);
+    }
+
+    /**
+     * @desc 站点日志
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function siteLog()
+    {
+        $deviceID = input('get.device_id/s','');
+        $data = DeviceLog::with(['projectAdmin'])
+            ->order('time desc')->where('device_id',$deviceID)->select();
+        return $this->success('请求成功','',$data);
+    }
+
+    public function siteInfo()
+    {
+        $deviceID = input('get.device_id/s','');
+        $data = Device::where('device_id',$deviceID)->find();
         return $this->success('请求成功','',$data);
     }
 }

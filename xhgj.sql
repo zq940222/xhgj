@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 牧马人
+Source Server         : 咸亨国际
 Source Server Version : 50638
 Source Host           : 47.96.8.108:3306
 Source Database       : xhgj
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-24 10:32:56
+Date: 2018-08-24 11:07:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,7 +23,7 @@ CREATE TABLE `category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(50) NOT NULL DEFAULT '' COMMENT '区域名称',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for device
@@ -41,6 +41,7 @@ CREATE TABLE `device` (
   `device_name` varchar(255) NOT NULL COMMENT '设备名称',
   `status` tinyint(1) NOT NULL COMMENT '设备状态  0正常  1 数据异常 2 通讯失败',
   `electric_type` varchar(255) NOT NULL COMMENT '供电方式',
+  `voltage` varchar(10) NOT NULL DEFAULT '' COMMENT '电压',
   `protocol` tinyint(1) NOT NULL COMMENT '通讯协议',
   `environment` varchar(255) NOT NULL COMMENT '设备检测环境',
   PRIMARY KEY (`device_id`),
@@ -109,6 +110,7 @@ CREATE TABLE `passageway` (
   `max_range` char(32) NOT NULL COMMENT '最大限值范围',
   `min_range` char(32) NOT NULL COMMENT '最小限值范围',
   `count_time` int(10) NOT NULL COMMENT '统计时间',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型:0=模拟量,1=开关量',
   `value` char(32) NOT NULL COMMENT '监测值',
   `change_value` char(32) NOT NULL COMMENT '数据变频值',
   PRIMARY KEY (`id`)

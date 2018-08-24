@@ -177,6 +177,12 @@ class SystemOverview extends BaseController
         return $this->success('请求成功','',$data);
     }
 
+    /**
+     * @desc 站点管理员
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function siteAdmin()
     {
         $deviceID = input('get.device_id/s','');

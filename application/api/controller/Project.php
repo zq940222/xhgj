@@ -22,7 +22,7 @@ class Project  extends Base
 {
      //项目概况-站点列表
      public function project(){
-         $uid=\app\api\token\Token::getCurrentUid();
+         $uid=\app\api\service\Token::getCurrentUid();
          $pid=Project_admin::where('id',$uid)->field('p_id')->find();
          $data=Device::where('project_id',$pid['p_id'])->order('install_last_time desc')
              ->field('device_name,device_id,install_last_time,maintain_last_worker,status')->select();
@@ -30,7 +30,7 @@ class Project  extends Base
      }
      //项目概况-报警列表
     public function police(){
-        $uid=\app\api\token\Token::getCurrentUid();
+        $uid=\app\api\service\Token::getCurrentUid();
         $pid=Project_admin::where('id',$uid)->field('p_id')->find();
         $data=Device::where('project_id',$pid['p_id'])->where('status','neq',0)
             ->order('install_last_time desc')
@@ -39,26 +39,25 @@ class Project  extends Base
     }
     //项目概况-站点详情
     public function details(){
-        $uid=\app\api\token\Token::getCurrentUid();
+        $uid=\app\api\service\Token::getCurrentUid();
          $did=Request::instance()->get('device_id',0);//站点id
-         $data=Passageway::join('device','device.device_id=passageway.device_id')
-             ->where('passageway.device_id',$did)
-             ->field('name,change_range_max,change_range_min,max_range,max_range,min_range,count_time,value,change_value')
+         $data=Passageway::where('passageway.device_id',$did)
+             ->field('passageway.*')
              ->select();
          return $this->success('请求成功','',$data);
     }
     //日志
     public function log(){
-        $uid=\app\api\token\Token::getCurrentUid();
+        $uid=\app\api\service\Token::getCurrentUid();
         $did=Request::instance()->get('device_id',0);//站点id
         $data=Device_log::join('project_admin','project_admin.id=device_log.project_id')
-            ->where('project_id',$uid)->where('device_id',$did)
-            ->order('time desc')->field('name,log_info,time')->select();
+            ->where('device_log.project_id',$uid)->where('device_log.device_id',$did)
+            ->order('time desc')->field('name,device_log.*')->select();
         return $this->success('请求成功','',$data);
     }
     //站点基本信息
     public function unit(){
-        $uid=\app\api\token\Token::getCurrentUid();
+        $uid=\app\api\service\Token::getCurrentUid();
         $did=Request::instance()->get('device_id',0);//站点id
         $pid=Project_admin::where('id',$uid)->field('p_id')->find();
         $data=Device::where('project_id',$pid['p_id'])->where('device_id',$did)
@@ -71,9 +70,17 @@ class Project  extends Base
     }
     //管理员
     public function admins(){
-        $uid=\app\api\token\Token::getCurrentUid();
+        $uid=\app\api\service\Token::getCurrentUid();
         $data=Project_admin::where('id',$uid)
             ->field('name,department,email,phone_number')->find();
         return $this->success('请求成功','',$data);
     }
+    //历史曲线-通道信息
+
+    public function Channel(){
+        $pid=Request::instance()->get('id',0);//通道id
+        $info=Passageway::where('id',$pid)->find();
+        return  $this->success('请求成功','',$info);
+    }
+
 }

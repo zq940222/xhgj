@@ -9,7 +9,7 @@
 namespace app\api\controller;
 
 
-use app\api\token\UserToken;
+use app\api\service\UserToken;
 
 class Token
 {

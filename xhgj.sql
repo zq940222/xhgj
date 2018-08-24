@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 咸亨国际
+Source Server         : 牧马人
 Source Server Version : 50638
 Source Host           : 47.96.8.108:3306
 Source Database       : xhgj
@@ -10,10 +10,20 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-22 16:21:02
+Date: 2018-08-24 10:32:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for category
+-- ----------------------------
+DROP TABLE IF EXISTS `category`;
+CREATE TABLE `category` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '区域名称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for device
@@ -49,7 +59,7 @@ CREATE TABLE `device_data` (
   `data` char(32) NOT NULL COMMENT '数据内容',
   `time` int(10) NOT NULL COMMENT '时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='设备数据表';
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='设备数据表';
 
 -- ----------------------------
 -- Table structure for device_log
@@ -110,17 +120,17 @@ CREATE TABLE `passageway` (
 DROP TABLE IF EXISTS `project_admin`;
 CREATE TABLE `project_admin` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `p_id` int(10) NOT NULL COMMENT '项目id',
+  `p_id` int(10) DEFAULT NULL COMMENT '项目id',
   `account_number` char(32) NOT NULL COMMENT '账号',
   `password` char(64) NOT NULL COMMENT '密码',
   `name` char(64) NOT NULL COMMENT '姓名',
   `department` char(64) NOT NULL COMMENT '部门',
   `email` char(32) DEFAULT '' COMMENT '邮箱',
   `phone_number` char(11) NOT NULL COMMENT '手机号',
-  `type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '1管理员 2巡逻员',
+  `type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '1管理员 2巡逻员 0网管',
   `create_time` int(10) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
 
 -- ----------------------------
 -- Table structure for project_admin_device
@@ -131,7 +141,7 @@ CREATE TABLE `project_admin_device` (
   `device_id` char(32) NOT NULL COMMENT '设备id',
   `project_admin_id` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_data
@@ -140,6 +150,7 @@ DROP TABLE IF EXISTS `project_data`;
 CREATE TABLE `project_data` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `device_id` int(10) NOT NULL,
+  `category_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属区域',
   `title` char(128) NOT NULL COMMENT '资料标题',
   `cover` char(128) NOT NULL COMMENT '资料封面',
   `content` text NOT NULL COMMENT '资料内容',

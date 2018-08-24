@@ -61,7 +61,7 @@ class Project  extends Base
         $did=Request::instance()->get('device_id',0);//站点id
         $pid=Project_admin::where('id',$uid)->field('p_id')->find();
         $data=Device::where('project_id',$pid['p_id'])->where('device_id',$did)
-            ->field('electric_type,protocol,environment,status,device_name')->find();
+            ->field('electric_type,protocol,environment,status,device_name,voltage')->find();
         //单元标识符
         $uit =Read_device::where('device_id',$did)
             ->field('mark')->find();

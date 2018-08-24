@@ -13,6 +13,7 @@ namespace app\admin\controller;
 use app\admin\model\Device;
 use app\admin\model\DeviceLog;
 use app\admin\model\Passageway;
+use app\admin\model\ProjectAdminDevice;
 use app\admin\model\Projects;
 
 class SystemOverview extends BaseController
@@ -163,10 +164,33 @@ class SystemOverview extends BaseController
         return $this->success('请求成功','',$data);
     }
 
+    /**
+     * @desc 站点基本信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function siteInfo()
     {
         $deviceID = input('get.device_id/s','');
         $data = Device::where('device_id',$deviceID)->find();
+        return $this->success('请求成功','',$data);
+    }
+
+    public function siteAdmin()
+    {
+        $deviceID = input('get.device_id/s','');
+        $admin = ProjectAdminDevice::hasWhere('admin',[
+                'type' => 1
+            ])
+            ->relation('admin')
+            ->where('device_id',$deviceID)
+            ->find();
+        $data = [];
+        $data['name'] = $admin->admin->name;
+        $data['department'] = $admin->admin->department;
+        $data['email'] = $admin->admin->email;
+        $data['phone_number'] = $admin->admin->phone_number;
         return $this->success('请求成功','',$data);
     }
 }

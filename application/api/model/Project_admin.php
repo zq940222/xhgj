@@ -13,5 +13,8 @@ use think\Model;
 
 class Project_admin extends Model
 {
-
+    public function device()
+    {
+        return $this->belongsToMany('Device','project_admin_device','device_id','project_admin_id');
+    }
 }

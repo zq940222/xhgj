@@ -199,4 +199,10 @@ class SystemOverview extends BaseController
         $data['phone_number'] = $admin->admin->phone_number;
         return $this->success('请求成功','',$data);
     }
+
+    public function historyCurve()
+    {
+        $time = input('param.time/s','');
+
+    }
 }

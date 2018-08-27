@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-24 11:07:53
+Date: 2018-08-27 09:31:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -113,6 +113,7 @@ CREATE TABLE `passageway` (
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型:0=模拟量,1=开关量',
   `value` char(32) NOT NULL COMMENT '监测值',
   `change_value` char(32) NOT NULL COMMENT '数据变频值',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态:0=正常,1=数据异常,2=通讯失败',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='通道表';
 
@@ -151,13 +152,14 @@ CREATE TABLE `project_admin_device` (
 DROP TABLE IF EXISTS `project_data`;
 CREATE TABLE `project_data` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `device_id` int(10) NOT NULL,
+  `device_id` char(36) NOT NULL DEFAULT '',
   `category_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属区域',
   `title` char(128) NOT NULL COMMENT '资料标题',
   `cover` char(128) NOT NULL COMMENT '资料封面',
   `content` text NOT NULL COMMENT '资料内容',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目资料表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目资料表';
 
 -- ----------------------------
 -- Table structure for project_inspect_log
@@ -170,7 +172,7 @@ CREATE TABLE `project_inspect_log` (
   `content` text NOT NULL COMMENT '巡检记录内容',
   `img` varchar(255) NOT NULL COMMENT '巡检记录图片内容',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for projects

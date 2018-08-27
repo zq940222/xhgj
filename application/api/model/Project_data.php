@@ -13,5 +13,8 @@ use think\Model;
 
 class Project_data extends Model
 {
-
+    public function category()
+    {
+        return $this->hasMany('Category','id','category_id');
+    }
 }

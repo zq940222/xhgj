@@ -11,10 +11,12 @@ namespace app\admin\controller;
 
 
 use app\admin\model\Device;
+use app\admin\model\DeviceData;
 use app\admin\model\DeviceLog;
 use app\admin\model\Passageway;
 use app\admin\model\ProjectAdminDevice;
 use app\admin\model\Projects;
+use app\admin\model\UserToken;
 
 class SystemOverview extends BaseController
 {
@@ -200,9 +202,60 @@ class SystemOverview extends BaseController
         return $this->success('请求成功','',$data);
     }
 
+    /**
+     * @desc 历史曲线
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function historyCurve()
     {
+        $draID = input('param.dra_id/d',0);
         $time = input('param.time/s','');
+        if ($time)
+        {
+            list($stime,$etime)=explode(' - ', $time);
+            $stime = strtotime($stime);
+            $etime = strtotime($etime);
+        }else{
+            $stime = time()-12*60*60;
+            $etime = time();
+        }
+
+        $array = DeviceData::where('dra_id','=',$draID)
+            ->order('time asc')
+            ->where('time','>=',$stime)
+            ->where('time','<=',$etime)
+            ->select();
+        $data = [];
+        foreach ($array as $value)
+        {
+            $data['time'][] = date('Y-m-d H:i',$value['time']);
+            $data['data'][] = $value['data'];
+        }
+        return $this->success('请求成功','',$data);
+    }
+
+    public function addLog()
+    {
+        $uid = UserToken::getCurrentUid();
+        $deviceID = input('post.device_id/s','');
+        $img = input('post.img/a',[]);
+        $content = input('post.content/s','');
+        $res = DeviceLog::create([
+            'device_id' => $deviceID,
+            'project_id' => $uid,
+            'log_info' => $content,
+            'img' => $img,
+            'time' => time()
+        ]);
+        if ($res)
+        {
+            return $this->success('上传成功');
+        }
+        else{
+            return $this->error('上传失败');
+        }
 
     }
 }

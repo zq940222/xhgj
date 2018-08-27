@@ -11,5 +11,8 @@ namespace app\admin\model;
 
 class Device extends BaseModel
 {
-
+    public function project()
+    {
+        return $this->belongsTo('Projects','project_id','id');
+    }
 }

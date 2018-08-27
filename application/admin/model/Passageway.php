@@ -11,5 +11,8 @@ namespace app\admin\model;
 
 class Passageway extends BaseModel
 {
-
+    public function device()
+    {
+        return $this->belongsTo('Device','device_id','device_id');
+    }
 }

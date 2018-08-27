@@ -15,4 +15,15 @@ class DeviceLog extends BaseModel
     {
         return $this->belongsTo('ProjectAdmin','project_id','id')->field(['id','name']);
     }
+
+    //base64上传图片
+    public function setImgAttr($value)
+    {
+        return json($value);
+    }
+
+    public function getImgAttr($value)
+    {
+        return json_decode($value,true);
+    }
 }

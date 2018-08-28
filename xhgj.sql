@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-28 15:07:41
+Date: 2018-08-28 18:44:01
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -42,13 +42,17 @@ CREATE TABLE `device` (
   `status` tinyint(1) NOT NULL COMMENT '设备状态  0正常  1 数据异常 2 通讯失败',
   `electric_type` varchar(255) NOT NULL COMMENT '供电方式',
   `voltage` varchar(10) NOT NULL DEFAULT '' COMMENT '电压',
-  `protocol` tinyint(1) NOT NULL COMMENT '通讯协议',
+  `protocol` tinyint(1) NOT NULL COMMENT '通讯协议:0=长连接,1=短链接',
   `environment` varchar(255) NOT NULL COMMENT '设备检测环境',
   `accendant_name` varchar(50) NOT NULL DEFAULT '' COMMENT '维护人姓名',
   `accendant_department` varchar(50) NOT NULL DEFAULT '' COMMENT '维护人部门',
   `accendant_email` varchar(64) NOT NULL DEFAULT '' COMMENT '维护人邮箱',
   `accendant_mobile` varchar(12) NOT NULL DEFAULT '' COMMENT '维护人电话',
   `mark` char(4) NOT NULL DEFAULT '' COMMENT '单元标识符',
+  `alarm_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '报警类型:0=正常,1=仅网管可见',
+  `alarm_communication_time` int(10) NOT NULL DEFAULT '1' COMMENT '报警通讯时间(秒)',
+  `communicationdistance` int(10) NOT NULL DEFAULT '0' COMMENT '通讯间隔(秒)',
+  `port_number` varchar(10) NOT NULL DEFAULT '' COMMENT '端口号',
   PRIMARY KEY (`device_id`),
   KEY `ip` (`ip`),
   KEY `device_id` (`device_id`)
@@ -115,12 +119,27 @@ CREATE TABLE `passageway` (
   `max_range` char(32) NOT NULL COMMENT '最大限值范围',
   `min_range` char(32) NOT NULL COMMENT '最小限值范围',
   `count_time` int(10) NOT NULL COMMENT '统计时间',
-  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型:0=模拟量,1=开关量',
   `value` char(32) NOT NULL COMMENT '监测值',
   `change_value` char(32) NOT NULL COMMENT '数据变频值',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态:0=正常,1=数据异常,2=通讯失败',
+  `a` decimal(5,2) NOT NULL DEFAULT '1.00' COMMENT 'a的值',
+  `b` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT 'b的值',
+  `switch_alarm` tinyint(1) DEFAULT NULL COMMENT '开关量报警值(0/1)',
+  `category_id` int(11) NOT NULL DEFAULT '0' COMMENT '通道类别',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='通道表';
+
+-- ----------------------------
+-- Table structure for passageway_category
+-- ----------------------------
+DROP TABLE IF EXISTS `passageway_category`;
+CREATE TABLE `passageway_category` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(100) NOT NULL COMMENT '通道类别名称',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据类型:0=模拟量,1=开关量',
+  `data_address` varchar(255) NOT NULL DEFAULT '' COMMENT '数据地址',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_admin
@@ -177,7 +196,7 @@ CREATE TABLE `project_inspect_log` (
   `content` text NOT NULL COMMENT '巡检记录内容',
   `img` varchar(255) NOT NULL COMMENT '巡检记录图片内容',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for projects

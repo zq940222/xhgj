@@ -13,11 +13,12 @@ class Device extends BaseModel
 {
     public function project()
     {
-        return $this->belongsTo('Projects','project_id','id');
+        return $this->belongsTo('Projects', 'project_id', 'id');
     }
 
     public function admin()
     {
-        return $this->belongsToMany('ProjectAdmin','ProjectAdminDevice','project_admin_id','device_id');
+        return $this->belongsToMany('ProjectAdmin', 'ProjectAdminDevice', 'project_admin_id', 'device_id');
     }
+
 }

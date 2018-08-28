@@ -158,6 +158,9 @@ class DeviceManagement extends BaseController
         return $this->success('请求成功','',$data);
     }
 
+    /**
+     * @desc 添加站点
+     */
     public function addDevice()
     {
         $deviceName = input('post.device_name/s','');
@@ -165,7 +168,100 @@ class DeviceManagement extends BaseController
         $province = input('post.province/s','');
         $projectID = input('post.project_id/d',0);
         $electricType = input('post.electric_type/s','');
-        $voltage = input('post.voltage/d','');
+        $voltage = input('post.voltage/s','');
+        $protocol = input('post.protocol/d',0);
+        $mark = input('post.mark/s','');
+        $environment = input('post.environment/s','');
+        $accendant_name = input('post.accendant_name/s','');
+        $accendant_department = input('post.accendant_department/s','');
+        $accendant_email = input('post.accendant_email/s','');
+        $accendant_mobile = input('post.accendant_mobile/s','');
+
+        $model = new Device();
+        $model->device_name = $deviceName;
+        $model->device_id = $deviceID;
+        $model->province = $province;
+        $model->project_id = $projectID;
+        $model->electric_type = $electricType;
+        $model->voltage = $voltage;
+        $model->protocol = $protocol;
+        $model->mark = $mark;
+        $model->environment = $environment;
+        $model->accendant_name = $accendant_name;
+        $model->accendant_department = $accendant_department;
+        $model->accendant_email = $accendant_email;
+        $model->accendant_mobile = $accendant_mobile;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('添加成功');
+        }else{
+            return $this->error('添加失败');
+        }
 
     }
+
+    /**
+     * @desc 报警设置
+     * @throws \think\exception\DbException
+     */
+    public function alarmSetting()
+    {
+        $deviceID = input('post.device_id/s','');
+        $alarm_communication_time = input('post.alarm_communication_time/d',1);
+        $alarm_type = input('post.alarm_type/d',0);
+
+        $model = Device::get($deviceID);
+        $model->alarm_communication_time = $alarm_communication_time;
+        $model->alarm_type = $alarm_type;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('设置成功');
+        }else{
+            return $this->error('设置失败');
+        }
+    }
+
+    /**
+     * @desc 通讯设置
+     * @throws \think\exception\DbException
+     */
+    public function communicationSetting()
+    {
+        $deviceID = input('post.device_id/s','');
+        $communicationdistance = input('post.communicationdistance/d',1);
+        $ip = input('post.ip/s','');
+        $port_number = input('post.port_number/s','');
+
+        $model = Device::get($deviceID);
+        $model->communicationdistance = $communicationdistance;
+        $model->ip = $ip;
+        $model->port_number = $port_number;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('设置成功');
+        }else{
+            return $this->error('设置失败');
+        }
+    }
+
+    public function passList()
+    {
+        $type = input('param.type/d',0);
+        $page = input('param.page/d',1);
+        $size = input('param.size/d',10);
+        $device_id = input('param.device_id/s','');
+
+        $where = [];
+        $where['type'] = ['=',$type];
+        $where['device_id'] = ['=',$device_id];
+
+        $data = Passageway::order('id desc')
+            ->where($where)
+            ->paginate($size,false,['page'=> $page]);
+        return $this->success('请求成功','',$data);
+    }
+
 }

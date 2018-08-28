@@ -14,4 +14,19 @@ use think\Model;
 class Device extends Model
 {
 
+
+    public function passageway()
+    {
+        return $this->belongsTo('Passageway','device_id','device_id');
+    }
+//    public function getStatusAttr($value,$data)
+//    {
+//        if ($data['alarm_type'] == 1)
+//        {
+//            return 0;
+//        }else{
+//            return $value;
+//        }
+//    }
+
 }

@@ -13,7 +13,7 @@ use app\api\model\Project_inspect_log;
 use think\Request;
 
 class Inspection extends Base
-{
+{   //巡检记录
     public function polling(){
         $uid=\app\api\service\Token::getCurrentUid();
         $data=Project_inspect_log::where('project_admin_id',$uid)->select();

@@ -9,17 +9,17 @@
 namespace app\api\controller;
 
 
+use app\api\model\Project_admin;
 use app\api\service\UserToken;
+use think\Controller;
 
-class Token
+class Token extends Controller
 {
     public function TokenUser($name = '', $password = '')
     {
         $ut = new UserToken();
-        $token = $ut->get($name,$password);
-        return [
-            'token' => $token
-        ];
+        $data['token'] = $ut->get($name,$password);
+        return $this->success('请求成功','',$data);
     }
 
 //    public function getTokenByWx($unionid = '')

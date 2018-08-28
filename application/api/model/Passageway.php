@@ -13,5 +13,8 @@ use think\Model;
 
 class Passageway extends Model
 {
-
+    public function device()
+    {
+        return $this->belongsTo('Device','device_id','device_id');
+    }
 }

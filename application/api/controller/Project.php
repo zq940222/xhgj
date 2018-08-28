@@ -9,7 +9,9 @@
 namespace app\api\controller;
 
 
+use app\admin\model\DeviceLog;
 use app\api\model\Device;
+use app\api\model\Device_data;
 use app\api\model\Device_log;
 use app\api\model\Passageway;
 use app\api\model\Project_admin;
@@ -23,26 +25,46 @@ class Project  extends Base
      //项目概况-站点列表
      public function project(){
          $uid=\app\api\service\Token::getCurrentUid();
-         $pid=Project_admin::where('id',$uid)->field('p_id')->find();
-         $data=Device::where('project_id',$pid['p_id'])->order('install_last_time desc')
-             ->field('device_name,device_id,install_last_time,maintain_last_worker,status')->select();
+//                 $uid=Request::instance()->get('aid',0);
+         $res=Project_admin::where('id',$uid)->find();
+         if($res['type']==1){
+             $data=Device::where('project_id',$res['p_id'])->order('install_last_time desc')
+                 ->field('device_name,device_id,install_last_time,maintain_last_worker,longitude,latitude,status')
+                 ->select();
+         }else{
+             $data=Device::join('project_admin_device p','p.device_id=device.device_id')
+               ->where('p.project_admin_id',$uid)
+               ->order('device.install_last_time desc')
+               ->field('device.device_name,device.device_id,device.install_last_time,device.maintain_last_worker,device.longitude,device.latitude,device.status')
+               ->select();
+         }
          return $this->success('请求成功','',$data);
      }
      //项目概况-报警列表
     public function police(){
         $uid=\app\api\service\Token::getCurrentUid();
-        $pid=Project_admin::where('id',$uid)->field('p_id')->find();
-        $data=Device::where('project_id',$pid['p_id'])->where('status','neq',0)
-            ->order('install_last_time desc')
-            ->field('device_name,device_id,status')->select();
+//        $uid=Request::instance()->get('aid',0);
+        $res=Project_admin::where('id',$uid)->find();
+        if($res['type']==1){
+            $data=Device::where('project_id',$res['p_id'])
+                ->where('status','neq',0)
+                ->order('install_last_time desc')
+                ->field('device_name,device_id,longitude,latitude,status')->select();
+        }else{
+            $data=Device::join('project_admin_device p','p.device_id=device.device_id')
+                ->where('p.project_admin_id',$uid)
+                ->where('device.status','neq',0)
+                ->order('device.install_last_time desc')
+                ->field('device.device_name,device.device_id,device.longitude,device.latitude,device.status')
+                ->select();
+        }
         return $this->success('请求成功','',$data);
     }
     //项目概况-站点详情
     public function details(){
-        $uid=\app\api\service\Token::getCurrentUid();
+//         $uid=\app\api\service\Token::getCurrentUid();
          $did=Request::instance()->get('device_id',0);//站点id
-         $data=Passageway::where('passageway.device_id',$did)
-             ->field('passageway.*')
+         $data=Passageway::where('device_id',$did)
              ->select();
          return $this->success('请求成功','',$data);
     }
@@ -50,7 +72,7 @@ class Project  extends Base
     public function log(){
         $uid=\app\api\service\Token::getCurrentUid();
         $did=Request::instance()->get('device_id',0);//站点id
-        $data=Device_log::join('project_admin','project_admin.id=device_log.project_id')
+        $data=DeviceLog::join('project_admin','project_admin.id=device_log.project_id')
             ->where('device_log.project_id',$uid)->where('device_log.device_id',$did)
             ->order('time desc')->field('name,device_log.*')->select();
         return $this->success('请求成功','',$data);
@@ -59,13 +81,12 @@ class Project  extends Base
     public function unit(){
         $uid=\app\api\service\Token::getCurrentUid();
         $did=Request::instance()->get('device_id',0);//站点id
-        $pid=Project_admin::where('id',$uid)->field('p_id')->find();
-        $data=Device::where('project_id',$pid['p_id'])->where('device_id',$did)
-            ->field('electric_type,protocol,environment,status,device_name,voltage')->find();
         //单元标识符
-        $uit =Read_device::where('device_id',$did)
-            ->field('mark')->find();
-        $data['unit']=$uit['mark'];
+//        $uit =Read_device::where('device_id',$did)
+//            ->field('mark')->find();
+        $data=Device::where('device_id',$did)
+            ->field('electric_type,protocol,environment,status,device_name,voltage,mark,accendant_name,accendant_department,accendant_email,accendant_mobile')->find();
+//        $data['unit']=$uit['mark'];
         return $this->success('请求成功','',$data);
     }
     //管理员
@@ -77,10 +98,64 @@ class Project  extends Base
     }
     //历史曲线-通道信息
 
-    public function Channel(){
-        $pid=Request::instance()->get('id',0);//通道id
+    public function channel(){
+        $pid=$id = input('param.id/d',0);//通道id
         $info=Passageway::where('id',$pid)->find();
         return  $this->success('请求成功','',$info);
     }
+    //历史曲线
+    public function history(){
+        $id = input('param.id/d',0);
+        $time = input('param.time/s','');
+        $info=Passageway::where('id',$id)->find();
+        if ($time)
+        {
+            list($stime,$etime)=explode(' - ', $time);
+            $stime = strtotime($stime);
+            $etime = strtotime($etime);
+        }else{
+            $stime = time()-12*60*60;
+            $etime = time();
+        }
+        if($info['type']==1){
+          return $this->error('无权限');
+        }else{
+            $array = Device_data::where('dra_id','=',$id)
+                ->order('time asc')
+                ->where('time','>=',$stime)
+                ->where('time','<=',$etime)
+                ->select();
+            $data = [];
+            foreach ($array as $value)
+            {
+                $data['time'][] = date('Y-m-d H:i',$value['time']);
+                $data['data'][] = $value['data'];
+            }
+            return $this->success('请求成功','',$data);
+        }
+
+    }
+    //上传日志
+    public function addlog(){
+        $uid=\app\api\service\Token::getCurrentUid();
+        $deviceID = input('post.device_id/s','');
+        $img = input('post.img/a',[]);
+        $content = input('post.content/s','');
+        $res = DeviceLog::create([
+            'device_id' => $deviceID,
+            'project_id' => $uid,
+            'log_info' => $content,
+            'img' => $img,
+            'time' => time()
+        ]);
+        if ($res)
+        {
+            return $this->success('上传成功');
+        }
+        else{
+            return $this->error('上传失败');
+        }
+    }
+
 
 }

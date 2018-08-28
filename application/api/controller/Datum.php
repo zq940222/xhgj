@@ -24,6 +24,7 @@ class Datum extends Base
     public function itemized(){
         $uid=\app\api\service\Token::getCurrentUid();
         $info=Project_admin::where('id',$uid)->find();
+        $cid=Request::instance()->get('category_id',0);//区域id
         if($info['type']==1){
             $device=Device::where('project_id',$info['p_id'])
                 ->field('device_id')->select();
@@ -31,29 +32,17 @@ class Datum extends Base
             $device=Device::where('project_admin_id',$uid)->select();
         }
         foreach ($device as $v){
-            $data[]=Project_data::where('device_id',$v['device_id'])
-                ->paginate(5,false,['page'=>1]);
-        }
-        return $this->success('请求成功','',$data);
-
-    }
-    //资料查询-分项监测 按区域查询
-    public function cate(){
-        $cid=Request::instance()->get('category_id',0);//区域id
-        $uid=\app\api\service\Token::getCurrentUid();
-        $info=Project_admin::where('id',$uid)->find();
-        if($info['type']==1){
-            $device=Device::where('project_id',$info['p_id'])->field('device_id')->select();
-
-        }else{
-            $device=Device::where('project_admin_id',$uid)->select();
-        }
-        foreach ($device as $v){
+            if($cid){
                 $data[]=Project_data::where('device_id',$v['device_id'])
                     ->where('project_data.category_id',$cid)
                     ->paginate(5,false,['page'=>1]);
+            }else{
+                $data[]=Project_data::where('device_id',$v['device_id'])
+                    ->paginate(5,false,['page'=>1]);
+            }
         }
         return $this->success('请求成功','',$data);
+
     }
     //分项监测所属区域
     public function  device(){

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-27 09:31:36
+Date: 2018-08-28 15:07:41
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,7 +23,7 @@ CREATE TABLE `category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(50) NOT NULL DEFAULT '' COMMENT '区域名称',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for device
@@ -44,6 +44,11 @@ CREATE TABLE `device` (
   `voltage` varchar(10) NOT NULL DEFAULT '' COMMENT '电压',
   `protocol` tinyint(1) NOT NULL COMMENT '通讯协议',
   `environment` varchar(255) NOT NULL COMMENT '设备检测环境',
+  `accendant_name` varchar(50) NOT NULL DEFAULT '' COMMENT '维护人姓名',
+  `accendant_department` varchar(50) NOT NULL DEFAULT '' COMMENT '维护人部门',
+  `accendant_email` varchar(64) NOT NULL DEFAULT '' COMMENT '维护人邮箱',
+  `accendant_mobile` varchar(12) NOT NULL DEFAULT '' COMMENT '维护人电话',
+  `mark` char(4) NOT NULL DEFAULT '' COMMENT '单元标识符',
   PRIMARY KEY (`device_id`),
   KEY `ip` (`ip`),
   KEY `device_id` (`device_id`)
@@ -115,7 +120,7 @@ CREATE TABLE `passageway` (
   `change_value` char(32) NOT NULL COMMENT '数据变频值',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态:0=正常,1=数据异常,2=通讯失败',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='通道表';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='通道表';
 
 -- ----------------------------
 -- Table structure for project_admin
@@ -133,7 +138,7 @@ CREATE TABLE `project_admin` (
   `type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '1管理员 2巡逻员 0网管',
   `create_time` int(10) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
 
 -- ----------------------------
 -- Table structure for project_admin_device
@@ -144,7 +149,7 @@ CREATE TABLE `project_admin_device` (
   `device_id` char(32) NOT NULL COMMENT '设备id',
   `project_admin_id` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_data
@@ -159,7 +164,7 @@ CREATE TABLE `project_data` (
   `content` text NOT NULL COMMENT '资料内容',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目资料表';
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='项目资料表';
 
 -- ----------------------------
 -- Table structure for project_inspect_log

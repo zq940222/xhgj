@@ -13,6 +13,7 @@ use app\admin\model\Device;
 use app\admin\model\Passageway;
 use app\admin\model\PassagewayCategory;
 use app\admin\model\Projects;
+use think\Db;
 
 class DeviceManagement extends BaseController
 {
@@ -327,4 +328,110 @@ class DeviceManagement extends BaseController
         return $this->success('请求成功','',$data);
     }
 
+    /**
+     * @desc 添加通道类型
+     */
+    public function addCategory()
+    {
+        $name = input('post.name/s','');
+        $type = input('post.type/d',0);
+        $data_address = input('post.data_address/s','');
+
+        $model = new PassagewayCategory();
+        $model->name = $name;
+        $model->type = $type;
+        $model->data_address = $data_address;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('添加成功');
+        }else{
+            return $this->error('添加失败');
+        }
+    }
+
+    /**
+     * @desc 编辑通道类型
+     * @throws \think\exception\DbException
+     */
+    public function editCategory()
+    {
+        $id = input('post.id/d',0);
+        $name = input('post.name/s','');
+        $type = input('post.type/d',0);
+        $data_address = input('post.data_address/s','');
+
+        $model = PassagewayCategory::get($id);
+        $model->name = $name;
+        $model->type = $type;
+        $model->data_address = $data_address;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('编辑成功');
+        }else{
+            return $this->error('编辑失败');
+        }
+    }
+
+    /**
+     * @desc 删除通道类型
+     */
+    public function deleteCategory()
+    {
+        $id = input('post.id/d',0);
+        $res = PassagewayCategory::destroy($id);
+        if ($res)
+        {
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /**
+     * @desc 限制设置
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function limitSetting()
+    {
+        $pass_id = input('post.pass_id/d',0);
+        $min_range = input('post.min_range/s','');
+        $max_range = input('post.max_range/s','');
+        $change_range_min = input('post.change_range_min/s','');
+        $change_range_max = input('post.change_range_max/s','');
+        $alarm_limit = input('post.alarm_limit/s','');
+        $passageways = input('post.passageways/a',[]);
+        if ($alarm_limit && $passageways)
+        {
+            Db::name('PassagewayCorrelation')->where('passageway1_id|passageway2_id',$pass_id)->delete();
+            $addData = [];
+            foreach ($passageways as $value)
+            {
+                $addData[] = [
+                    'passageway1_id' => $pass_id,
+                    'passageway2_id' => $value,
+                    'alarm_limit' => $alarm_limit
+                ];
+            }
+            Db::name('PassagewayCorrelation')->insertAll($addData);
+        }
+
+        $model = Passageway::get($pass_id);
+        $model->min_range = $min_range;
+        $model->max_range = $max_range;
+        $model->change_range_min = $change_range_min;
+        $model->change_range_max = $change_range_max;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('设置成功');
+        }else{
+            return $this->error('设置失败');
+        }
+    }
+
+    
 }

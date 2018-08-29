@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-28 19:27:14
+Date: 2018-08-29 16:42:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -128,6 +128,7 @@ CREATE TABLE `passageway` (
   `category_id` int(11) NOT NULL DEFAULT '0' COMMENT '通道类别',
   `start_coding` varchar(10) NOT NULL DEFAULT '' COMMENT '起始编码',
   `end_coding` varchar(10) NOT NULL DEFAULT '' COMMENT '结束编码',
+  `group_count` int(10) NOT NULL DEFAULT '1' COMMENT '获取数据组数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='通道表';
 
@@ -142,6 +143,17 @@ CREATE TABLE `passageway_category` (
   `data_address` varchar(255) NOT NULL DEFAULT '' COMMENT '数据地址',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for passageway_correlation
+-- ----------------------------
+DROP TABLE IF EXISTS `passageway_correlation`;
+CREATE TABLE `passageway_correlation` (
+  `passageway1_id` int(11) NOT NULL,
+  `passageway2_id` int(11) NOT NULL,
+  `alarm_limit` varchar(10) DEFAULT NULL COMMENT '报警限值',
+  PRIMARY KEY (`passageway1_id`,`passageway2_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_admin
@@ -159,7 +171,7 @@ CREATE TABLE `project_admin` (
   `type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '1管理员 2巡逻员 0网管',
   `create_time` int(10) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
 
 -- ----------------------------
 -- Table structure for project_admin_device
@@ -170,7 +182,7 @@ CREATE TABLE `project_admin_device` (
   `device_id` char(32) NOT NULL COMMENT '设备id',
   `project_admin_id` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_data

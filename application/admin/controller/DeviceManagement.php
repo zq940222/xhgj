@@ -11,6 +11,7 @@ namespace app\admin\controller;
 
 use app\admin\model\Device;
 use app\admin\model\Passageway;
+use app\admin\model\PassagewayCategory;
 use app\admin\model\Projects;
 
 class DeviceManagement extends BaseController
@@ -247,20 +248,82 @@ class DeviceManagement extends BaseController
         }
     }
 
+    /**
+     * @desc 通道列表
+     * @throws \think\exception\DbException
+     */
     public function passList()
     {
-        $type = input('param.type/d',0);
         $page = input('param.page/d',1);
         $size = input('param.size/d',10);
         $device_id = input('param.device_id/s','');
 
         $where = [];
-        $where['type'] = ['=',$type];
         $where['device_id'] = ['=',$device_id];
 
         $data = Passageway::order('id desc')
+            ->with(['category'])
             ->where($where)
             ->paginate($size,false,['page'=> $page]);
+        return $this->success('请求成功','',$data);
+    }
+
+    /**
+     * @desc 新增通道
+     */
+    public function addPass()
+    {
+        $passageways = input('post.passageways/a',[]);
+
+        $model = new Passageway();
+        $res = $model->save($passageways);
+        if ($res)
+        {
+            return $this->success('添加成功');
+        }else{
+            return $this->error('添加失败');
+        }
+    }
+
+    /**
+     * @desc 修改通道
+     * @throws \think\exception\DbException
+     */
+    public function editPass()
+    {
+        $name = input('post.name/s','');
+        $category_id = input('post.category_id/d',0);
+        $start_coding = input('post.start_coding/s','');
+        $end_coding = input('post.end_coding/s','');
+        $a = input('post.a/d',1);
+        $b = input('post.b/d',0);
+        $switch_alarm = input('post.switch_alarm/d',0);
+        $id = input('post.id/d',0);
+
+        $model = Passageway::get($id);
+        $model->name = $name;
+        $model->category_id = $category_id;
+        $model->start_coding = $start_coding;
+        $model->end_coding = $end_coding;
+        $model->a = $a;
+        $model->b = $b;
+        $model->switch_alarm = $switch_alarm;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('修改成功');
+        }else{
+            return $this->error('修改失败');
+        }
+    }
+
+    /**
+     * @desc 通道类型列表
+     * @throws \think\exception\DbException
+     */
+    public function categoryList()
+    {
+        $data = PassagewayCategory::all();
         return $this->success('请求成功','',$data);
     }
 

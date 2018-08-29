@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-28 18:44:01
+Date: 2018-08-28 19:27:14
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -126,6 +126,8 @@ CREATE TABLE `passageway` (
   `b` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT 'b的值',
   `switch_alarm` tinyint(1) DEFAULT NULL COMMENT '开关量报警值(0/1)',
   `category_id` int(11) NOT NULL DEFAULT '0' COMMENT '通道类别',
+  `start_coding` varchar(10) NOT NULL DEFAULT '' COMMENT '起始编码',
+  `end_coding` varchar(10) NOT NULL DEFAULT '' COMMENT '结束编码',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='通道表';
 
@@ -139,7 +141,7 @@ CREATE TABLE `passageway_category` (
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据类型:0=模拟量,1=开关量',
   `data_address` varchar(255) NOT NULL DEFAULT '' COMMENT '数据地址',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_admin

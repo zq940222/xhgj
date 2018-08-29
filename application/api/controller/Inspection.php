@@ -9,6 +9,9 @@
 namespace app\api\controller;
 
 
+use app\api\model\Device;
+use app\api\model\Project_admin;
+use app\api\model\Project_admin_device;
 use app\api\model\Project_inspect_log;
 use think\Request;
 
@@ -16,7 +19,18 @@ class Inspection extends Base
 {   //巡检记录
     public function polling(){
         $uid=\app\api\service\Token::getCurrentUid();
-        $data=Project_inspect_log::where('project_admin_id',$uid)->select();
+        $info=Project_admin::where('id',$uid)->find();
+        if($info['type']==1){
+            $data=Project_admin_device::alias('p')
+                ->join('device d','d.device_id=p.device_id')
+                ->join('project_inspect_log l','l.project_admin_id=p.project_admin_id')
+                ->where('d.project_id',$info['p_id'])
+                ->field('l.*')
+                ->select();
+        }else{
+            $data=Project_inspect_log::where('project_admin_id',$uid)->select();
+        }
+
         return $this->success('请求成功','',$data);
     }
     //搜索巡检记录
@@ -32,6 +46,29 @@ class Inspection extends Base
         ];
         $data=Project_inspect_log::where($where)->select();
         return $this->success('请求成功','',$data);
+    }
+    //上传记录
+    public function addpoll(){
+        $uid=\app\api\service\Token::getCurrentUid();
+        $img = input('post.img/a',[]);
+        $content = input('post.content/s','');
+        $info=Project_admin::where('id',$uid)->find();
+        if($info['type']==1){
+            return $this->error('无权限');
+        }
+        $res = Project_inspect_log::create([
+            'project_admin_id' => $uid,
+            'content' => $content,
+            'img' => $img,
+            'create_time' => time()
+        ]);
+        if ($res)
+        {
+            return $this->success('上传成功','');
+        }
+        else{
+            return $this->error('上传失败');
+        }
     }
 
 }

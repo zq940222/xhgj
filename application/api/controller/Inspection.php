@@ -30,12 +30,13 @@ class Inspection extends Base
         }else{
             $data=Project_inspect_log::where('project_admin_id',$uid)->select();
         }
-
+        $aa=date('Y-m-d',1535040000);
         return $this->success('请求成功','',$data);
     }
     //搜索巡检记录
     public function checks(){
         $uid=\app\api\service\Token::getCurrentUid();
+        $info=Project_admin::where('id',$uid)->find();
         $create_time=Request::instance()->post('create_time',0);//站点id
         $time = strtotime($create_time);
         $start = mktime(0, 0, 0, date("m", $time), date("d", $time), date("Y", $time));
@@ -44,7 +45,22 @@ class Inspection extends Base
             'create_time' => ['between', [$start, $end]],
             'project_admin_id' => $uid,
         ];
-        $data=Project_inspect_log::where($where)->select();
+        $where1=[
+            'l.create_time' => ['between', [$start, $end]],
+
+        ];
+        if($info['type']==1){
+            $data=Project_admin_device::alias('p')
+                ->join('device d','d.device_id=p.device_id')
+                ->join('project_inspect_log l','l.project_admin_id=p.project_admin_id')
+                ->where('d.project_id',$info['p_id'])
+                ->where($where1)
+                ->field('l.*')
+                ->select();
+        }else{
+            $data=Project_inspect_log::where($where)->select();
+        }
+
         return $this->success('请求成功','',$data);
     }
     //上传记录
@@ -62,9 +78,10 @@ class Inspection extends Base
             'img' => $img,
             'create_time' => time()
         ]);
+        $data=[];
         if ($res)
         {
-            return $this->success('上传成功','');
+            return $this->success('上传成功','',$data);
         }
         else{
             return $this->error('上传失败');

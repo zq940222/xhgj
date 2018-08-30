@@ -24,6 +24,10 @@ class UserToken extends Token
             ->where('name','=',$name)
             ->where('password','=',$password)
             ->find();
+        if (!$user)
+        {
+            throw new Exception('账户或密码错误');
+        }
 //        return $user;
         return $this->grantToken($user);
     }

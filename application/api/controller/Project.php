@@ -14,6 +14,7 @@ use app\api\model\Device;
 use app\api\model\Device_data;
 use app\api\model\Device_log;
 use app\api\model\Passageway;
+use app\api\model\Passageway_category;
 use app\api\model\Project_admin;
 use app\api\model\Read_device;
 use think\Controller;
@@ -22,6 +23,9 @@ use think\Request;
 
 class Project  extends Base
 {
+//     public function promessage(){
+//         $uid=\app\api\service\Token::getCurrentUid();
+//     }
      //项目概况-站点列表
      public function project(){
          $uid=\app\api\service\Token::getCurrentUid();
@@ -60,12 +64,36 @@ class Project  extends Base
         }
         return $this->success('请求成功','',$data);
     }
-    //项目概况-站点详情
+    //项目概况-通道
+    /*
+    DROP TABLE IF EXISTS `passageway_category`;
+CREATE TABLE `passageway_category` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(100) NOT NULL COMMENT '通道类别名称',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据类型:0=模拟量,1=开关量',
+  `data_address` varchar(255) NOT NULL DEFAULT '' COMMENT '数据地址',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    */
     public function details(){
 //         $uid=\app\api\service\Token::getCurrentUid();
          $did=Request::instance()->get('device_id',0);//站点id
-         $data=Passageway::where('device_id',$did)
-             ->select();
+         $pass=Passageway::with(['passagewayCategory'])->where('device_id',$did)->select();
+         $data=[];
+         foreach ($pass as $k=>$v){
+             $data[$k]['id']=$v['id'];
+             $data[$k]['device_id']=$v['device_id'];
+             $data[$k]['name']=$v['name'];
+             $data[$k]['change_range_max']=$v['change_range_max'];
+             $data[$k]['change_range_min']=$v['change_range_min'];
+             $data[$k]['max_range']=$v['max_range'];
+             $data[$k]['min_range']=$v['min_range'];
+             $data[$k]['count_time']=$v['count_time'];
+             $data[$k]['value']=$v['value'];
+             $data[$k]['change_value']=$v['change_value'];
+             $data[$k]['status']=$v['status'];
+             $data[$k]['type']=$v['passageway_category']['type'];
+         }
          return $this->success('请求成功','',$data);
     }
     //日志

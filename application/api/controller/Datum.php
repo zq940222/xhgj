@@ -21,25 +21,50 @@ class Datum extends Base
 {
     //资料查询-分项监测
 
-    public function itemized(){
-        $uid=\app\api\service\Token::getCurrentUid();
+    public function itemized($page=1,$size=5){
+//        $uid=\app\api\service\Token::getCurrentUid();
+        $uid=Request::instance()->get('aid',0);
         $info=Project_admin::where('id',$uid)->find();
         $cid=Request::instance()->get('category_id',0);//区域id
         if($info['type']==1){
-            $device=Device::where('project_id',$info['p_id'])
-                ->field('device_id')->select();
-        }else{
-            $device=Device::where('project_admin_id',$uid)->select();
-        }
-        foreach ($device as $v){
             if($cid){
-                $data[]=Project_data::where('device_id',$v['device_id'])
-                    ->where('project_data.category_id',$cid)
-                    ->paginate(5,false,['page'=>1]);
+                $device=Project_data::alias('p')
+                    ->join('device d','p.device_id=d.device_id','left')
+                    ->where('d.project_id',$info['p_id'])
+                    ->where('p.category_id',$cid)
+                    ->paginate($size,false,['page'=>$page])->toArray();
             }else{
-                $data[]=Project_data::where('device_id',$v['device_id'])
-                    ->paginate(5,false,['page'=>1]);
+                $device=Project_data::alias('p')
+                    ->join('device d','p.device_id=d.device_id','left')
+                    ->where('d.project_id',$info['p_id'])
+                    ->paginate($size,false,['page'=>$page])->toArray();
             }
+        }else{
+            if($cid){
+                $device=Project_data::alias('p')
+                    ->join('project_admin_device d','p.device_id=d.device_id')
+                    ->where('d.project_admin_id',$uid)
+                    ->where('p.category_id',$cid)
+                    ->paginate($size,false,['page'=>$page])->toArray();
+            }else{
+                $device=Project_data::alias('p')
+                    ->join('project_admin_device d','p.device_id=d.device_id')
+                    ->where('d.project_admin_id',$uid)
+                    ->paginate($size,false,['page'=>$page])->toArray();
+            }
+        }
+        $data['total']=$device['total'];
+        $data['per_page']=$device['per_page'];
+        $data['current_page']=$device['current_page'];
+        $data['last_page']=$device['last_page'];
+        foreach ($device['data'] as $k=>$v){
+            $data['data'][$k]['id']=$v['id'];
+            $data['data'][$k]['device_id']=$v['device_id'];
+            $data['data'][$k]['category_id']=$v['category_id'];
+            $data['data'][$k]['title']=$v['title'];
+            $data['data'][$k]['cover']=$v['cover'];
+            $data['data'][$k]['content']=$v['content'];
+            $data['data'][$k]['create_time']=$v['create_time'];
         }
         return $this->success('请求成功','',$data);
 
@@ -47,14 +72,15 @@ class Datum extends Base
     //分项监测所属区域
     public function  device(){
       $data=Category::select();
+//        $data=Project_data::select();
       return $this->success('请求成功','',$data);
     }
     //分项监测-删除
     public function delpro(){
         $pid=Request::instance()->get('id',0);//资料id
         $uid=\app\api\service\Token::getCurrentUid();
-        $arr=Project_admin_device::where('project_admin_id',$uid)->find();
-        if($arr==null){
+        $info=Project_admin::where('id',$uid)->find();
+        if($info['type']==1){
         $info=Project_data::where('id',$pid)->delete();
             if($info==1){
                 return $this->success('删除成功','');

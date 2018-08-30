@@ -12,6 +12,7 @@ namespace app\api\controller;
 use app\api\model\Device;
 use app\api\model\Device_data;
 use app\api\model\Passageway;
+use app\api\model\PassagewayCategory;
 use app\api\model\Project_admin;
 use app\api\model\Project_admin_device;
 use think\Request;
@@ -19,7 +20,7 @@ use think\Request;
 class Statistical extends Base
 {
    //统计分析-故障筛查
-    public function fault(){
+    public function fault($page=1,$size=10){
         $uid=\app\api\service\Token::getCurrentUid();//登录id
 //        $uid=Request::instance()->get('aid',0);
         $res=Project_admin::where('id',$uid)->find();
@@ -50,7 +51,7 @@ class Statistical extends Base
               $info=Passageway::join('device','device.device_id=passageway.device_id')
                   ->where('device.project_id',$res['p_id'])
                   ->where($where)
-                  ->paginate(10,false,['page'=>1])
+                  ->paginate($size,false,['page'=>$page])
                   ->toArray();
             $data['total']=$info['total'];
             $data['per_page']=$info['per_page'];
@@ -71,7 +72,7 @@ class Statistical extends Base
                     $info=Device::join('passageway','device.device_id=passageway.device_id')
                         ->where('device.device_id',$v['device_id'])
                         ->where($where)
-                        ->paginate(10,false,['page'=>1])
+                        ->paginate($size,false,['page'=>$page])
                         ->toArray();
                 }
             $data['total']=$info['total'];
@@ -115,6 +116,19 @@ class Statistical extends Base
         $data = Passageway::order('id desc')
             ->where('device_id','=',$device_id)
             ->field(['id','name','type'])
+            ->select();
+        return $this->success('请求成功','',$data);
+    }
+    //通道类别联动
+    public function cate(){
+       $data=PassagewayCategory::select();
+       return $this->success('请求成功','',$data);
+    }
+    //站点-通道联动
+    public function site($category_id=''){
+        $data=Passageway::join('device','device.device_id=passageway.device_id')
+            ->where('passageway.category_id',$category_id)
+            ->field('passageway.id,passageway.name,device.device_name')
             ->select();
         return $this->success('请求成功','',$data);
     }

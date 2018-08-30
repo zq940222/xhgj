@@ -17,4 +17,7 @@ class Passageway extends Model
     {
         return $this->belongsTo('Device','device_id','device_id');
     }
+    public function passagewayCategory(){
+        return $this->belongsTo('PassagewayCategory','category_id','id');
+    }
 }

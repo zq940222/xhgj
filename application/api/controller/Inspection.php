@@ -30,7 +30,7 @@ class Inspection extends Base
         }else{
             $data=Project_inspect_log::where('project_admin_id',$uid)->select();
         }
-        $aa=date('Y-m-d',1535040000);
+//        $aa=date('Y-m-d',1535040000);
         return $this->success('请求成功','',$data);
     }
     //搜索巡检记录

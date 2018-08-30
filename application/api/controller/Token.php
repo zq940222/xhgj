@@ -10,18 +10,23 @@ namespace app\api\controller;
 
 
 use app\api\model\Project_admin;
+use app\api\model\Projects;
 use app\api\service\UserToken;
 use think\Controller;
 
 class Token extends Controller
 {
+    public function logos($name=''){
+        $pid=Project_admin::where('account_number',$name)->column('p_id');
+        $data=Projects::where('id',$pid[0])->field('logo')->find();
+        return $this->success('请求成功','',$data);
+    }
     public function TokenUser($name = '', $password = '')
     {
         $ut = new UserToken();
         $data['token'] = $ut->get($name,$password);
         return $this->success('请求成功','',$data);
     }
-
 //    public function getTokenByWx($unionid = '')
 //    {
 //        $wxAuth = new WxAuth();
@@ -30,7 +35,6 @@ class Token extends Controller
 //            'token' => $token
 //        ];
 //    }
-//
 //    public function bindWx($unionid = '')
 //    {
 //        (new TokenGet())->goCheck();

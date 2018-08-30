@@ -10,12 +10,13 @@ namespace app\api\controller;
 
 
 use app\admin\model\DeviceLog;
+use app\admin\model\Projects;
 use app\api\model\Device;
 use app\api\model\Device_data;
-use app\api\model\Device_log;
 use app\api\model\Passageway;
-use app\api\model\Passageway_category;
+use app\api\model\PassagewayCategory;
 use app\api\model\Project_admin;
+use app\api\model\Project_admin_device;
 use app\api\model\Read_device;
 use think\Controller;
 use think\Db;
@@ -23,16 +24,57 @@ use think\Request;
 
 class Project  extends Base
 {
-//     public function promessage(){
-//         $uid=\app\api\service\Token::getCurrentUid();
-//     }
+    //项目详情
+     public function promessage($device_id=''){
+         $uid=\app\api\service\Token::getCurrentUid();
+//         $uid=3;
+         $res=Project_admin::where('id',$uid)->find();
+//         if($res['type']==1){
+             $info = Projects::where('id',$res['p_id'])
+                 ->order('build_start_time desc')
+                 ->relation(['device'])->select();
+             $data = [];
+             foreach ($info as $value)
+             {
+                 $count = count($value['device']);
+                 $data[] = [
+                     'id' => $value['id'],
+                     'project_name' => $value['project_name'],
+                     'device_count' => $count,
+                     'build_start_time' => $value['build_start_time'],
+                     'longitude' => $value['longitude'],
+                     'latitude' => $value['latitude'],
+                     'province' => $value['province'],
+                 ];
+             }
+         return $this->success('请求成功','',$data);
+//            ;
+//         }else{
+//             $where=[];
+//             if($device_id!=""){
+//                  $where['d.device_id']= ['=',$device_id];
+//             }
+//             $data=Device::alias('d')->join('projects p','p.id=d.project_id')
+//                 ->join('project_admin_device a','a.device_id=d.device_id')
+//                 ->where('a.project_admin_id',$uid)
+//                 ->where($where)
+//                 ->order('d.install_last_time desc')
+//                 ->field('d.project_id,p.id,p.project_name,p.build_start_time,p.longitude,p.latitude,p.province')
+//                 ->find();
+//             $count=Device::where('project_id',$data['project_id'])->select();
+//             $data['device_count']=count($count);
+////             Project_admin_device::alias('a')->join('device')
+//         }
+
+     }
      //项目概况-站点列表
      public function project(){
          $uid=\app\api\service\Token::getCurrentUid();
 //                 $uid=Request::instance()->get('aid',0);
          $res=Project_admin::where('id',$uid)->find();
          if($res['type']==1){
-             $data=Device::where('project_id',$res['p_id'])->order('install_last_time desc')
+             $data=Device::where('project_id',$res['p_id'])
+                 ->order('install_last_time desc')
                  ->field('device_name,device_id,install_last_time,maintain_last_worker,longitude,latitude,status')
                  ->select();
          }else{

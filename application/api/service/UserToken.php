@@ -21,7 +21,7 @@ class UserToken extends Token
 
         //检查该用户是否存在
         $user = Db::table('project_admin')
-            ->where('name','=',$name)
+            ->where('account_number','=',$name)
             ->where('password','=',$password)
             ->find();
         if (!$user)

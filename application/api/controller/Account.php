@@ -16,6 +16,14 @@ use think\Request;
 
 class Account extends Base
 {
+//    //管理员信息
+//    public function aments(){
+//        $uid=\app\api\service\Token::getCurrentUid();//登录id
+//        $data=Project_admin::where('id',$uid)
+//            ->field('name,type')
+//            ->find();
+//        return $this->success('请求成功','',$data);
+//    }
    //账号管理
     public function management($page=1,$size=10){
         $uid=\app\api\service\Token::getCurrentUid();//登录id

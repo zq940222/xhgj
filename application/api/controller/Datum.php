@@ -22,8 +22,8 @@ class Datum extends Base
     //资料查询-分项监测
 
     public function itemized($page=1,$size=5){
-//        $uid=\app\api\service\Token::getCurrentUid();
-        $uid=Request::instance()->get('aid',0);
+        $uid=\app\api\service\Token::getCurrentUid();
+//        $uid=Request::instance()->get('aid',0);
         $info=Project_admin::where('id',$uid)->find();
         $cid=Request::instance()->get('category_id',0);//区域id
         if($info['type']==1){

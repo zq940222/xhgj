@@ -25,9 +25,8 @@ use think\Request;
 class Project  extends Base
 {
     //项目详情
-     public function promessage($device_id=''){
+     public function promessage(){
          $uid=\app\api\service\Token::getCurrentUid();
-//         $uid=3;
          $res=Project_admin::where('id',$uid)->find();
 //         if($res['type']==1){
              $info = Projects::where('id',$res['p_id'])
@@ -70,55 +69,48 @@ class Project  extends Base
      //项目概况-站点列表
      public function project(){
          $uid=\app\api\service\Token::getCurrentUid();
-//                 $uid=Request::instance()->get('aid',0);
+//         $uid=3;
+         $device=new Device();
          $res=Project_admin::where('id',$uid)->find();
          if($res['type']==1){
-             $data=Device::where('project_id',$res['p_id'])
+
+             $data=$device->where('project_id',$res['p_id'])
                  ->order('install_last_time desc')
-                 ->field('device_name,device_id,install_last_time,maintain_last_worker,longitude,latitude,status')
+                 ->field('device_name,device_id,install_last_time,maintain_last_worker,longitude,latitude,status,alarm_type')
                  ->select();
          }else{
-             $data=Device::join('project_admin_device p','p.device_id=device.device_id')
+             $data=$device->join('project_admin_device p','p.device_id=device.device_id')
                ->where('p.project_admin_id',$uid)
                ->order('device.install_last_time desc')
-               ->field('device.device_name,device.device_id,device.install_last_time,device.maintain_last_worker,device.longitude,device.latitude,device.status')
+               ->field('device.device_name,device.device_id,device.install_last_time,device.maintain_last_worker,device.longitude,device.latitude,device.status,device.alarm_type')
                ->select();
          }
          return $this->success('请求成功','',$data);
      }
      //项目概况-报警列表
     public function police(){
+        $device=new Device();
         $uid=\app\api\service\Token::getCurrentUid();
-//        $uid=Request::instance()->get('aid',0);
         $res=Project_admin::where('id',$uid)->find();
         if($res['type']==1){
-            $data=Device::where('project_id',$res['p_id'])
-                ->where('status','neq',0)
+            $data=$device->where('project_id',$res['p_id'])
+                ->where('status','in',[1,2])
+                ->where('alarm_type',0)
                 ->order('install_last_time desc')
-                ->field('device_name,device_id,longitude,latitude,status')->select();
+                ->field('device_name,device_id,longitude,latitude,status,alarm_type')->select();
         }else{
-            $data=Device::join('project_admin_device p','p.device_id=device.device_id')
+            $data=$device->join('project_admin_device p','p.device_id=device.device_id')
                 ->where('p.project_admin_id',$uid)
-                ->where('device.status','neq',0)
+                ->where('device.status','in',[1,2])
+                ->where('device.alarm_type',0)
                 ->order('device.install_last_time desc')
-                ->field('device.device_name,device.device_id,device.longitude,device.latitude,device.status')
+                ->field('device.device_name,device.device_id,device.longitude,device.latitude,device.status,device.alarm_type')
                 ->select();
         }
         return $this->success('请求成功','',$data);
     }
     //项目概况-通道
-    /*
-    DROP TABLE IF EXISTS `passageway_category`;
-CREATE TABLE `passageway_category` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `name` varchar(100) NOT NULL COMMENT '通道类别名称',
-  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据类型:0=模拟量,1=开关量',
-  `data_address` varchar(255) NOT NULL DEFAULT '' COMMENT '数据地址',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    */
     public function details(){
-//         $uid=\app\api\service\Token::getCurrentUid();
          $did=Request::instance()->get('device_id',0);//站点id
          $pass=Passageway::with(['passagewayCategory'])->where('device_id',$did)->select();
          $data=[];
@@ -143,19 +135,20 @@ CREATE TABLE `passageway_category` (
         $uid=\app\api\service\Token::getCurrentUid();
         $did=Request::instance()->get('device_id',0);//站点id
         $data=DeviceLog::join('project_admin','project_admin.id=device_log.project_id')
-            ->where('device_log.project_id',$uid)->where('device_log.device_id',$did)
-            ->order('time desc')->field('name,device_log.*')->select();
+            ->where('device_log.project_id',$uid)
+            ->where('device_log.device_id',$did)
+            ->order('time desc')
+            ->field('name,device_log.*')
+            ->select();
         return $this->success('请求成功','',$data);
     }
     //站点基本信息
     public function unit(){
         $uid=\app\api\service\Token::getCurrentUid();
         $did=Request::instance()->get('device_id',0);//站点id
-        //单元标识符
-//        $uit =Read_device::where('device_id',$did)
-//            ->field('mark')->find();
         $data=Device::where('device_id',$did)
-            ->field('electric_type,protocol,environment,status,device_name,voltage,mark,accendant_name,accendant_department,accendant_email,accendant_mobile')->find();
+            ->field('electric_type,protocol,environment,status,device_name,voltage,mark,accendant_name,accendant_department,accendant_email,accendant_mobile,alarm_type')
+            ->find();
 //        $data['unit']=$uit['mark'];
         return $this->success('请求成功','',$data);
     }
@@ -163,7 +156,8 @@ CREATE TABLE `passageway_category` (
     public function admins(){
         $uid=\app\api\service\Token::getCurrentUid();
         $data=Project_admin::where('id',$uid)
-            ->field('name,department,email,phone_number')->find();
+            ->field('name,department,email,phone_number')
+            ->find();
         return $this->success('请求成功','',$data);
     }
     //历史曲线-通道信息

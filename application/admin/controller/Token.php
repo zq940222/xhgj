@@ -14,10 +14,13 @@ use think\Controller;
 
 class Token extends Controller
 {
-    public function getToken($username = '', $password = '')
+    public function getToken()
     {
+        $username = input('param.username/s','');
+        $password = input('param.password/s','');
         $ut = new UserToken();
-        $token = $ut->get($username,$password);
+        $token = $ut->getToken($username,$password);
+
         $data['token'] = $token;
         return $this->success('登录成功','',$data);
     }

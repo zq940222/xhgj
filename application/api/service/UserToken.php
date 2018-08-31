@@ -10,6 +10,7 @@ namespace app\api\service;
 
 
 //use app\api\lib\exception\TokenException;
+use app\api\model\Project_admin;
 use think\Db;
 use think\Exception;
 
@@ -20,9 +21,8 @@ class UserToken extends Token
 //        VerificationCode::checkCode($mobile,$code);
 
         //检查该用户是否存在
-        $user = Db::table('project_admin')
-            ->where('account_number','=',$name)
-            ->where('password','=',$password)
+        $user = Project_admin::where('account_number','=',$name)
+            ->where('password','=',md5($password))
             ->find();
         if (!$user)
         {

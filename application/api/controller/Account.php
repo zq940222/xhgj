@@ -60,7 +60,9 @@ class Account extends Base
                 $data['data'][$key]['time'] = $value['create_time'];
             }
         }else{
-            $list=Project_admin::where('id',$uid)->paginate($size,false,['page'=>$page])->toArray();
+            $list=Project_admin::where('id',$uid
+            )->paginate($size,false,['page'=>$page])
+                ->toArray();
             $res=Device::join('project_admin_device pro','pro.device_id=device.device_id')
                 ->where('project_admin_id',$uid)
                 ->column('device_name');
@@ -83,9 +85,12 @@ class Account extends Base
         $res=Project_admin::where('id',$uid)->find();
         $id=Request::instance()->get('id',0);
         if($res['type']==1){
-            $info=Device::where('project_id',$res['p_id'])->field('device_id')->select();
+            $info=Device::where('project_id',$res['p_id'])
+                ->field('device_id')
+                ->select();
             foreach ($info as $v){
-                $list=Project_admin_device::where('device_id',$v['device_id'])->where('project_admin_id',$id)->delete();
+                $list=Project_admin_device::where('device_id',$v['device_id'])
+                    ->where('project_admin_id',$id)->delete();
             }
             if($list){
                 return $this->success('删除成功','');
@@ -149,9 +154,21 @@ class Account extends Base
         $res=Project_admin::where('id',$uid)->find();
         $xid=Request::instance()->get('id',0);//巡查员id
         if($res['type']==1){
-          $data=Project_admin::where('id',$xid)
-              ->field('id,account_number,name')
-              ->find();
+//          $data=Project_admin::where('id',$xid)
+//              ->field('id,account_number,name')
+//              ->find();
+            $res=Project_admin::with(['device'])
+                ->where('id',$xid)
+                ->where('type',2)
+                ->find();
+            $data['id'] = $res['id'];
+            $data['account_number'] = $res['account_number'];
+            $data['name'] = $res['name'];
+            foreach ($res['device'] as $k=>$v)
+            {
+                $data['device'][$k]['device_id'] = $v['device_id'];
+                $data['device'][$k]['device_name'] = $v['device_name'];
+            }
           return $this->success('请求成功','',$data);
         }else{
             return $this->error('无权限');
@@ -186,6 +203,37 @@ class Account extends Base
         }else{
             return $this->error('稍后再试');
         }
+    }
+    //修改密码
+    public function passwords(){
+        $pwd=input('post.pwd/s',0);
+        $pwds=input('post.pwds/s',0);
+//        $rpwd=input('post.rpwds/s',0);
+        $uid=\app\api\service\Token::getCurrentUid();//登录id123456789
+//        $uid=3;
+        $info=Project_admin::where('id',$uid)
+            ->where('password',md5($pwd))
+            ->find();
+        if($info){
+            if($pwds)
+            {
+                $model = new Project_admin();
+                $res=$model->save(['password'=>$pwds],['id'=>$uid]);
+                if($res){
+                    return $this->success('修改成功','');
+                }else{
+                    return $this->error('修改失败','',$res);
+                }
+            }
+//            else{
+//                return $this->error('密码不一致');
+//            }
+
+        }else{
+
+            return $this->error('您输入的原密码不正确',$info);
+        }
+
     }
 
 }

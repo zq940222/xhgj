@@ -15,4 +15,9 @@ class Projects extends BaseModel
     {
         return $this->hasMany('Device','project_id','id');
     }
+
+    public function getLogoAttr($value)
+    {
+        return $this->prefixImgUrl($value);
+    }
 }

@@ -109,6 +109,18 @@ class SystemOverview extends BaseController
     }
 
     /**
+     * @desc 项目信息
+     * @param $id
+     * @throws \think\exception\DbException
+     */
+    public function projectSingle()
+    {
+        $project_id = input('param.project_id/d',0);
+        $data = Projects::get($project_id);
+        return $this->success('请求成功','',$data);
+    }
+
+    /**
      * @desc 站点列表
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException

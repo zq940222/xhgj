@@ -15,4 +15,9 @@ class ProjectData extends BaseModel
     {
         return $this->belongsTo('Category','category_id','id');
     }
+
+    public function getCoverAttr($value)
+    {
+        return $this->prefixImgUrl($value);
+    }
 }

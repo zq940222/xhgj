@@ -24,6 +24,11 @@ class DeviceLog extends BaseModel
 
     public function getImgAttr($value)
     {
-        return json_decode($value,true);
+        $array = json_decode($value,true);
+        foreach ($array as &$v)
+        {
+            $v = $this->prefixImgUrl($v);
+        }
+        return $array;
     }
 }

@@ -25,7 +25,7 @@ class ExceptionHandle extends Handle
             if ($e instanceof \think\exception\ValidateException)
             {
                 $code = 0;
-                $statuscode = 200;
+                $statuscode = 404;
                 $msg = $e->getError();
             }
             // Http异常
@@ -33,7 +33,25 @@ class ExceptionHandle extends Handle
             {
                 $statuscode = $code = $e->getStatusCode();
             }
+            //Api异常
+            if ($e instanceof ApiException)
+            {
+                $code = 0;
+                $statuscode = 404;
+                $msg = $e->msg;
+            }
             return json(['code' => $code, 'msg' => $msg, 'time' => time(), 'data' => null], $statuscode);
+        }
+        else{
+            //Api异常
+            if ($e instanceof ApiException)
+            {
+                $code = 0;
+                $statuscode = 404;
+                $msg = $e->msg;
+                return json(['code' => $code, 'msg' => $msg, 'time' => time(), 'data' => null], $statuscode);
+            }
+
         }
 
         //其它此交由系统处理

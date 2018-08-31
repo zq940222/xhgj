@@ -11,5 +11,13 @@ namespace app\admin\model;
 
 class ProjectAdmin extends BaseModel
 {
+    public function project()
+    {
+        return $this->belongsTo('Projects','p_id','id');
+    }
 
+    public function device()
+    {
+        return $this->belongsToMany('Device','ProjectAdminDevice','device_id','project_admin_id');
+    }
 }

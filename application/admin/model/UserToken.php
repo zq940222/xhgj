@@ -9,24 +9,23 @@
 namespace app\admin\model;
 
 
+use app\library\ApiException;
 use think\Cache;
-use think\Db;
 use think\Exception;
 use think\Request;
 
 class UserToken
 {
-    public function get($username,$password)
+    public function getToken($username,$password)
     {
         //检查该用户是否存在
-        $user = Db::table('project_admin')
-            ->where('account_number','=',$username)
+        $user = ProjectAdmin::where('account_number','=',$username)
             ->where('password','=',$password)
             ->where('type','=',0)
             ->find();
         if (!$user)
         {
-            throw new Exception('账户或密码错误');
+            throw new ApiException(['msg' =>'账户或密码错误']);
         }
         return $this->grantToken($user);
     }
@@ -39,14 +38,18 @@ class UserToken
     }
 
     private function saveToCache($cachedValue){
-        $key = self::generateToken();
+        //32个字符
+        $randChars = getRandChar(32);
+        //用三组加密
+        $timestamp = time();
+        $key = md5($randChars.$timestamp);
+
         $value = json_encode($cachedValue);
 
         $request = cache($key, $value);
         if (!$request) {
-            throw new Exception([
-                'msg' => '服务器缓存异常',
-                'errorCode' => '10005'
+            throw new ApiException([
+                'msg' => '服务器缓存异常'
             ]);
         }
         return $key;
@@ -61,11 +64,8 @@ class UserToken
         //32个字符
         $randChars = getRandChar(32);
         //用三组加密
-        $timestamp = $_SERVER['REQUEST_TIME'];
-        //盐
-        $salt = config('secure.token_salt');
-
-        return md5($randChars.$timestamp.$salt);
+        $timestamp = time();
+        return md5($randChars.$timestamp);
 
     }
 
@@ -74,7 +74,7 @@ class UserToken
             ->header('token');
         $vars = Cache::get($token);
         if (!$vars) {
-            throw new Exception();
+            throw new ApiException(['msg' => '登录过期']);
         }
         else{
             if (!is_array($vars)) {
@@ -84,7 +84,7 @@ class UserToken
                 return $vars[$key];
             }
             else{
-                throw new Exception('尝试获取得Token变量并不存在');
+                throw new ApiException(['msg' =>'尝试获取得Token变量并不存在']);
             }
         }
     }

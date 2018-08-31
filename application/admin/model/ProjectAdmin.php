@@ -11,6 +11,12 @@ namespace app\admin\model;
 
 class ProjectAdmin extends BaseModel
 {
+
+    public function setPasswordAttr($value)
+    {
+        return md5($value);
+    }
+
     public function project()
     {
         return $this->belongsTo('Projects','p_id','id');

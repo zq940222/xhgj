@@ -20,7 +20,7 @@ class UserToken
     {
         //检查该用户是否存在
         $user = ProjectAdmin::where('account_number','=',$username)
-            ->where('password','=',$password)
+            ->where('password','=',md5($password))
             ->where('type','=',0)
             ->find();
         if (!$user)

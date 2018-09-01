@@ -126,7 +126,11 @@ class Project  extends Base
              $data[$k]['value']=$v['value'];
              $data[$k]['change_value']=$v['change_value'];
              $data[$k]['status']=$v['status'];
+             $data[$k]['a']=$v['a'];
+             $data[$k]['b']=$v['b'];
+             $data[$k]['switch_alarm']=$v['switch_alarm'];
              $data[$k]['type']=$v['passageway_category']['type'];
+             $data[$k]['category_name']=$v['passageway_category']['name'];
          }
          return $this->success('请求成功','',$data);
     }
@@ -161,7 +165,6 @@ class Project  extends Base
         return $this->success('请求成功','',$data);
     }
     //历史曲线-通道信息
-
     public function channel(){
         $pid=$id = input('param.id/d',0);//通道id
         $info=Passageway::where('id',$pid)->find();

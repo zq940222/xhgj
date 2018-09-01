@@ -12,6 +12,7 @@ namespace app\admin\controller;
 use app\admin\model\Device;
 use app\admin\model\DeviceData;
 use app\admin\model\Passageway;
+use app\admin\model\PassagewayCategory;
 use app\admin\model\Projects;
 
 class StatisticalAnalysis extends BaseController
@@ -62,6 +63,7 @@ class StatisticalAnalysis extends BaseController
         $data['per_page'] = $obj['per_page'];
         $data['current_page'] = $obj['current_page'];
         $data['last_page'] = $obj['last_page'];
+        $data['data'] = [];
         foreach ($obj['data'] as $value)
         {
             $data['data'][] = [
@@ -151,5 +153,18 @@ class StatisticalAnalysis extends BaseController
             $datas[] = $data;
         }
         return $this->success('请求成功','',$datas);
+    }
+
+    public function getCategory()
+    {
+        $data = PassagewayCategory::all();
+        return $this->success('请求成功','',$data);
+    }
+
+    public function getPassagewayByCategory()
+    {
+        $category_id = input('param.category_id/d',0);
+        $data = Passageway::where('category_id','=',$category_id)->field(['id','name'])->select();
+        return $this->success('请求成功','',$data);
     }
 }

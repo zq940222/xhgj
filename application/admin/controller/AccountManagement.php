@@ -31,7 +31,7 @@ class AccountManagement extends BaseController
         $model = new ProjectAdmin();
         $data = $model->relation('project')
             ->where($where)
-            ->field(['account_number','name','create_time','p_id'])
+            ->field(['id','account_number','name','create_time','p_id'])
             ->paginate($size,false,['page' => $page]);
         return $this->success('请求成功','',$data);
     }

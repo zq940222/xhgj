@@ -11,5 +11,22 @@ namespace app\admin\model;
 
 class ProjectInspectLog extends BaseModel
 {
+    public function setImgAttr($value)
+    {
+        return json_encode($value);
+    }
 
+    public function getImgAttr($value)
+    {
+        $array = [];
+        if ($value)
+        {
+            $array = json_decode($value,true);
+            foreach ($array as &$v)
+            {
+                $v = $this->prefixImgUrl($v);
+            }
+        }
+        return $array;
+    }
 }

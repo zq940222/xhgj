@@ -193,29 +193,6 @@ class SystemOverview extends BaseController
     }
 
     /**
-     * @desc 站点管理员
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function siteAdmin()
-    {
-        $deviceID = input('get.device_id/s','');
-        $admin = ProjectAdminDevice::hasWhere('admin',[
-                'type' => 1
-            ])
-            ->relation('admin')
-            ->where('device_id',$deviceID)
-            ->find();
-        $data = [];
-        $data['name'] = $admin->admin->name;
-        $data['department'] = $admin->admin->department;
-        $data['email'] = $admin->admin->email;
-        $data['phone_number'] = $admin->admin->phone_number;
-        return $this->success('请求成功','',$data);
-    }
-
-    /**
      * @desc 历史曲线
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -246,6 +223,14 @@ class SystemOverview extends BaseController
             $data['time'][] = date('Y-m-d H:i',$value['time']);
             $data['data'][] = $value['data'];
         }
+        return $this->success('请求成功','',$data);
+    }
+
+    public function passagewaySingle()
+    {
+        $pass_id = input('param.pass_id/d',0);
+        $data = Passageway::with(['device'])
+            ->find($pass_id);
         return $this->success('请求成功','',$data);
     }
 

@@ -214,7 +214,7 @@ class Project  extends Base
         ]);
         if ($res)
         {
-            return $this->success('上传成功');
+            return $this->success('上传成功','');
         }
         else{
             return $this->error('上传失败');

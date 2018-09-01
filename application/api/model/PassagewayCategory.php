@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class PassagewayCategory extends Model
+class PassagewayCategory extends Base
 {
 
 }

@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Project_admin extends Model
+class Project_admin extends Base
 {
     public function setPasswordAttr($password){
         return md5($password);

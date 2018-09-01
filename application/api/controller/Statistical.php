@@ -115,7 +115,7 @@ class Statistical extends Base
     public function pass($device_id=''){
         $data = Passageway::order('id desc')
             ->where('device_id','=',$device_id)
-            ->field(['id','name','type'])
+            ->field(['id','name'])
             ->select();
         return $this->success('请求成功','',$data);
     }

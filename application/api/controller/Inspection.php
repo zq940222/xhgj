@@ -19,16 +19,29 @@ class Inspection extends Base
 {   //巡检记录
     public function polling(){
         $uid=\app\api\service\Token::getCurrentUid();
+//        $uid=3;
         $info=Project_admin::where('id',$uid)->find();
+        $date = input('param.date/s','');
+        $where = [];
+        $where1=[];
+        if($date){
+            list($stime,$etime)=explode(' - ', $date);
+            $where['l.create_time']=[['>',strtotime($stime)], ['<', strtotime($etime)]];
+            $where1['create_time']=[['>',strtotime($stime)], ['<', strtotime($etime)]];
+        }
         if($info['type']==1){
             $data=Project_admin_device::alias('p')
                 ->join('device d','d.device_id=p.device_id')
                 ->join('project_inspect_log l','l.project_admin_id=p.project_admin_id')
+                ->where($where)
                 ->where('d.project_id',$info['p_id'])
+                ->order('l.create_time desc')
                 ->field('l.*')
                 ->select();
         }else{
-            $data=Project_inspect_log::where('project_admin_id',$uid)->select();
+            $data=Project_inspect_log::where('project_admin_id',$uid)
+                ->where($where1)
+                ->order('create_time desc')->select();
         }
 //        $aa=date('Y-m-d',1535040000);
         return $this->success('请求成功','',$data);

@@ -13,5 +13,13 @@ use think\Model;
 
 class Base extends Model
 {
+    protected function prefixImgUrl($value)
+    {
+        $finalUrl = $value;
+        if ($value){
+            $finalUrl = config('setting.img_prefix').$value;
+        }
+        return $finalUrl;
+    }
 
 }

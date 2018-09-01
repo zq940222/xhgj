@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Passageway extends Model
+class Passageway extends Base
 {
     public function device()
     {

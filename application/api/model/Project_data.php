@@ -11,10 +11,14 @@ namespace app\api\model;
 
 use think\Model;
 
-class Project_data extends Model
+class Project_data extends Base
 {
     public function category()
     {
         return $this->hasMany('Category','id','category_id');
+    }
+    public function getCoverAttr($value)
+    {
+        return $this->prefixImgUrl($value);
     }
 }

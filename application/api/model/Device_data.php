@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Device_data extends Model
+class Device_data extends Base
 {
 
 }

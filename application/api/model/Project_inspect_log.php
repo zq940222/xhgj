@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Project_inspect_log extends Model
+class Project_inspect_log extends Base
 {
    //base64上传图片
     public function setImgAttr($value)
@@ -21,6 +21,11 @@ class Project_inspect_log extends Model
 
     public function getImgAttr($value)
     {
-        return json_decode($value,true);
+        $array = json_decode($value,true);
+        foreach ($array as &$v)
+        {
+            $v = $this->prefixImgUrl($v);
+        }
+        return $array;
     }
 }

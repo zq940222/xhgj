@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Project_admin_device extends Model
+class Project_admin_device extends Base
 {
 
 }

@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Device extends Model
+class Device extends Base
 {
 
     public function getStatusAttr($value,$data)

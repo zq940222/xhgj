@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Read_device extends Model
+class Read_device extends Base
 {
 
 }

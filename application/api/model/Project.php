@@ -11,7 +11,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class Project extends Model
+class Project extends Base
 {
 
 }

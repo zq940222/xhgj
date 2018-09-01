@@ -174,7 +174,7 @@ class Project  extends Base
     public function history(){
         $id = input('param.id/d',0);
         $time = input('param.time/s','');
-        $info=Passageway::where('id',$id)->find();
+        $info=Passageway::with(['passagewayCategory'])->where('id',$id)->find();
         if ($time)
         {
             list($stime,$etime)=explode(' - ', $time);
@@ -184,7 +184,7 @@ class Project  extends Base
             $stime = time()-12*60*60;
             $etime = time();
         }
-        if($info['type']==1){
+        if($info['passageway_category']['type']==1){
           return $this->error('无权限');
         }else{
             $array = Device_data::where('dra_id','=',$id)
@@ -200,6 +200,7 @@ class Project  extends Base
             }
             return $this->success('请求成功','',$data);
         }
+//        return $this->success('请求成功','',$info);
 
     }
     //上传日志

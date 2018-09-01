@@ -21,10 +21,14 @@ class Project_inspect_log extends Base
 
     public function getImgAttr($value)
     {
-        $array = json_decode($value,true);
-        foreach ($array as &$v)
+        $array = [];
+        if ($value)
         {
-            $v = $this->prefixImgUrl($v);
+            $array = json_decode($value,true);
+            foreach ($array as &$v)
+            {
+                $v = $this->prefixImgUrl($v);
+            }
         }
         return $array;
     }

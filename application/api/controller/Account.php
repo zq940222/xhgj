@@ -121,7 +121,20 @@ class Account extends Base
                  return $this->error('用户名已存在');
              }
          }else{
-             $aid=Project_admin::insertGetId(['p_id'=>$res['p_id'],'account_number'=>$account_number,'password'=>$password,'name'=>$name,'create_time'=>time(),'type'=>2]);
+//             $model=new Project_admin();
+//             $model->name = $name;
+//             $model->type = 2;
+//             $model->account_number = $account_number;
+//             $model->password = $password;
+//             $model->create_time=time();
+//             $model->save();
+             $aid=Project_admin::insertGetId([
+                 'p_id'=>$res['p_id'],
+                 'account_number'=>$account_number,
+                 'password'=>md5($password),
+                 'name'=>$name,
+                 'create_time'=>time(),
+                 'type'=>2]);
             $dev=explode(',',$device_id);
             for($i=0;$i<count($dev);$i++){
               $pdev=Project_admin_device::insert(['device_id'=>$dev[$i],'project_admin_id'=>$aid]);

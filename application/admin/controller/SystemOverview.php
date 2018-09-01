@@ -159,7 +159,8 @@ class SystemOverview extends BaseController
     public function channelList()
     {
         $deviceID = input('get.device_id/s','');
-        $data = Passageway::where('device_id',$deviceID)
+        $data = Passageway::with(['category'])
+            ->where('device_id',$deviceID)
             ->select();
         return $this->success('请求成功','',$data);
     }
@@ -270,4 +271,16 @@ class SystemOverview extends BaseController
         }
 
     }
+
+    public function test()
+    {
+        $array = [
+            'zmkm.png','zmkm.png'
+        ];
+        $model = DeviceLog::get(1);
+        $model->img = $array;
+        $res = $model->save();
+        return $res;
+    }
+
 }

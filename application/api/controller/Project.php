@@ -167,8 +167,26 @@ class Project  extends Base
     //历史曲线-通道信息
     public function channel(){
         $pid=$id = input('param.id/d',0);//通道id
-        $info=Passageway::where('id',$pid)->find();
-        return  $this->success('请求成功','',$info);
+        $info=Passageway::alias('p')->join('
+        device d','p.device_id=d.device_id')->with(['passagewayCategory'])->where('p.id',$pid)->field('d.device_name,p.*')->find();
+        $data['id']=$info['id'];
+        $data['device_id']=$info['device_id'];
+        $data['name']=$info['name'];
+        $data['device_name']=$info['device_name'];
+        $data['change_range_max']=$info['change_range_max'];
+        $data['change_range_min']=$info['change_range_min'];
+        $data['max_range']=$info['max_range'];
+        $data['min_range']=$info['min_range'];
+        $data['count_time']=$info['count_time'];
+        $data['value']=$info['value'];
+        $data['change_value']=$info['change_value'];
+        $data['status']=$info['status'];
+        $data['a']=$info['a'];
+        $data['b']=$info['b'];
+        $data['switch_alarm']=$info['switch_alarm'];
+        $data['type']=$info['passageway_category']['type'];
+        $data['category_name']=$info['passageway_category']['name'];
+        return  $this->success('请求成功','',$data);
     }
     //历史曲线
     public function history(){

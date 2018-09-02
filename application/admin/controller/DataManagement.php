@@ -63,7 +63,10 @@ class DataManagement extends BaseController
         $model = ProjectData::get($id);
         $model->title = $title;
         $model->category_id = $category_id;
-        $model->content = $content;
+        if ($content)
+        {
+            $model->content = $content;
+        }
         $res = $model->save();
         if ($res)
         {

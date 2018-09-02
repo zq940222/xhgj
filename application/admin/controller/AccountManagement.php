@@ -61,7 +61,7 @@ class AccountManagement extends BaseController
         $model = new ProjectAdmin();
         $array = $model->relation(['project','device'])
             ->where($where)
-            ->field(['id','account_number','name','create_time','p_id','id'])
+            ->field(['account_number','name','create_time','p_id','id'])
             ->paginate($size,false,['page' => $page])->toArray();
         $data = [];
         foreach ($array['data'] as $value)
@@ -72,6 +72,7 @@ class AccountManagement extends BaseController
                 $device[] = $v['device_name'];
             }
             $data[] = [
+                'id' => $value['id'],
                 'account_number' => $value['account_number'],
                 'name' => $value['name'],
                 'project' => $value['project']['project_name'],

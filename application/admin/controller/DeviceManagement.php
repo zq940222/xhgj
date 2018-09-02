@@ -169,7 +169,6 @@ class DeviceManagement extends BaseController
     {
         $deviceName = input('post.device_name/s','');
         $deviceID = input('post.device_id/s','');
-        $province = input('post.province/s','');
         $projectID = input('post.project_id/d',0);
         $electricType = input('post.electric_type/s','');
         $voltage = input('post.voltage/s','');
@@ -184,7 +183,6 @@ class DeviceManagement extends BaseController
         $model = new Device();
         $model->device_name = $deviceName;
         $model->device_id = $deviceID;
-        $model->province = $province;
         $model->project_id = $projectID;
         $model->electric_type = $electricType;
         $model->voltage = $voltage;
@@ -202,15 +200,53 @@ class DeviceManagement extends BaseController
         $readDeviceModel->mark = $mark;
         $readDeviceModel->save();
 
-        $modelB = new DeviceRegisterAlias();
-        $modelB->device_id = $deviceID;
-        $modelB->save();
-
         if ($res)
         {
             return $this->success('添加成功');
         }else{
             return $this->error('添加失败');
+        }
+
+    }
+
+    /**
+     * @desc 编辑站点
+     */
+    public function editDevice()
+    {
+        $deviceName = input('post.device_name/s','');
+        $deviceID = input('post.device_id/s','');
+        $projectID = input('post.project_id/d',0);
+        $electricType = input('post.electric_type/s','');
+        $voltage = input('post.voltage/s','');
+        $protocol = input('post.protocol/d',0);
+        $mark = input('post.mark/s','');
+        $environment = input('post.environment/s','');
+        $accendant_name = input('post.accendant_name/s','');
+        $accendant_department = input('post.accendant_department/s','');
+        $accendant_email = input('post.accendant_email/s','');
+        $accendant_mobile = input('post.accendant_mobile/s','');
+
+        $model = Device::get($deviceID);
+        $model->device_name = $deviceName;
+        $model->device_id = $deviceID;
+        $model->project_id = $projectID;
+        $model->electric_type = $electricType;
+        $model->voltage = $voltage;
+        $model->protocol = $protocol;
+        $model->mark = $mark;
+        $model->environment = $environment;
+        $model->accendant_name = $accendant_name;
+        $model->accendant_department = $accendant_department;
+        $model->accendant_email = $accendant_email;
+        $model->accendant_mobile = $accendant_mobile;
+        $res = $model->save();
+
+        if ($res)
+        {
+            return $this->success('编辑成功');
+        }else{
+            return $this->error('编辑失败');
         }
 
     }
@@ -282,10 +318,13 @@ class DeviceManagement extends BaseController
         $where = [];
         $where['device_id'] = ['=',$device_id];
 
+        $device = Device::get($device_id);
         $data = Passageway::order('id desc')
             ->with(['category'])
             ->where($where)
-            ->paginate($size,false,['page'=> $page]);
+            ->paginate($size,false,['page'=> $page])
+            ->toArray();
+        $data['device_name'] = $device['device_name'];
         return $this->success('请求成功','',$data);
     }
 
@@ -474,5 +513,4 @@ class DeviceManagement extends BaseController
         }
     }
 
-    
 }

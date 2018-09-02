@@ -16,7 +16,7 @@ class Upload extends Controller
     {
         $file = request()->file('file');
         if($file) {
-            $info=$file->move(ROOT_PATH . 'public' . DS . 'uploads/temp');
+            $info=$file->move(ROOT_PATH . 'public' . DS . 'uploads');
             if($info) {
                 $savename=$info->getsavename();
             } else {

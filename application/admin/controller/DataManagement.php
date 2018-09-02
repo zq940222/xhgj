@@ -104,4 +104,10 @@ class DataManagement extends BaseController
             return $this->error('添加失败');
         }
     }
+
+    public function categoryList()
+    {
+        $data = Category::all();
+        return $this->success('请求成功','',$data);
+    }
 }

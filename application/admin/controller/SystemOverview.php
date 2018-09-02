@@ -176,6 +176,13 @@ class SystemOverview extends BaseController
         $deviceID = input('get.device_id/s','');
         $data = DeviceLog::with(['projectAdmin'])
             ->order('time desc')->where('device_id',$deviceID)->select();
+        foreach ($data as &$value)
+        {
+            if (!$value['project_admin'])
+            {
+                $value['project_admin'] = [];
+            }
+        }
         return $this->success('请求成功','',$data);
     }
 
@@ -236,7 +243,8 @@ class SystemOverview extends BaseController
 
     public function addLog()
     {
-        $uid = UserToken::getCurrentUid();
+//        $uid = UserToken::getCurrentUid();
+        $uid = 1;
         $deviceID = input('post.device_id/s','');
         $img = input('post.img/a',[]);
         $content = input('post.content/s','');

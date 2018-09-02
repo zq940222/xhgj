@@ -32,7 +32,16 @@ class AccountManagement extends BaseController
         $data = $model->relation('project')
             ->where($where)
             ->field(['id','account_number','name','create_time','p_id'])
-            ->paginate($size,false,['page' => $page]);
+            ->paginate($size,false,['page' => $page])->toArray();
+
+        foreach ($data['data'] as &$value)
+        {
+            if (!$value['project'])
+            {
+                $value['project'] = [];
+            }
+        }
+
         return $this->success('请求成功','',$data);
     }
 
@@ -52,7 +61,7 @@ class AccountManagement extends BaseController
         $model = new ProjectAdmin();
         $array = $model->relation(['project','device'])
             ->where($where)
-            ->field(['account_number','name','create_time','p_id','id'])
+            ->field(['id','account_number','name','create_time','p_id','id'])
             ->paginate($size,false,['page' => $page])->toArray();
         $data = [];
         foreach ($array['data'] as $value)

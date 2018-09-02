@@ -10,9 +10,11 @@ namespace app\admin\controller;
 
 
 use app\admin\model\Device;
+use app\admin\model\DeviceRegisterAlias;
 use app\admin\model\Passageway;
 use app\admin\model\PassagewayCategory;
 use app\admin\model\Projects;
+use app\admin\model\ReadDevice;
 use think\Db;
 
 class DeviceManagement extends BaseController
@@ -73,7 +75,7 @@ class DeviceManagement extends BaseController
      */
     public function editProject()
     {
-        $id = input('post.id/d',0);
+        $id = input('post.project_id/d',0);
         $projectName = input('post.project_name/s','');
         $projectLogo = input('post.project_logo/s','');
         $province = input('post.province/s','');
@@ -194,6 +196,16 @@ class DeviceManagement extends BaseController
         $model->accendant_email = $accendant_email;
         $model->accendant_mobile = $accendant_mobile;
         $res = $model->save();
+
+        $readDeviceModel = new ReadDevice();
+        $readDeviceModel->device_id = $deviceID;
+        $readDeviceModel->mark = $mark;
+        $readDeviceModel->save();
+
+        $modelB = new DeviceRegisterAlias();
+        $modelB->device_id = $deviceID;
+        $modelB->save();
+
         if ($res)
         {
             return $this->success('添加成功');
@@ -249,6 +261,14 @@ class DeviceManagement extends BaseController
         }
     }
 
+    public function deleteDevice()
+    {
+        $device_id = input('post.device_id/s','');
+        Device::destroy($device_id);
+        Passageway::where('device_id',$device_id)->delete();
+        return $this->success('删除成功');
+    }
+
     /**
      * @desc 通道列表
      * @throws \think\exception\DbException
@@ -276,14 +296,27 @@ class DeviceManagement extends BaseController
     {
         $passageways = input('post.passageways/a',[]);
 
-        $model = new Passageway();
-        $res = $model->save($passageways);
-        if ($res)
+//        $model = new Passageway();
+//        $res = $model->save($passageways);
+
+        foreach ($passageways as $value)
         {
-            return $this->success('添加成功');
-        }else{
-            return $this->error('添加失败');
+            $model = new Passageway();
+            $model->save($value);
+
+            $modelB = new DeviceRegisterAlias();
+            $modelB->device_id = $value['device_id'];
+            $modelB->passageway_id = $model->id;
+            $modelB->starting_address = $value['start_coding'];
+            $modelB->register_number = $value['end_coding'];
+            $modelB->a = $value['a'];
+            $modelB->b = $value['b'];
+            $modelB->save();
+
         }
+
+        return $this->success('添加成功');
+
     }
 
     /**
@@ -310,6 +343,14 @@ class DeviceManagement extends BaseController
         $model->b = $b;
         $model->switch_alarm = $switch_alarm;
         $res = $model->save();
+
+        $modelB = DeviceRegisterAlias::where('passageway_id',$id)->find();
+        $modelB->starting_address = $start_coding;
+        $modelB->register_number = $end_coding;
+        $modelB->a = $a;
+        $modelB->b = $b;
+        $modelB->save();
+
         if ($res)
         {
             return $this->success('修改成功');

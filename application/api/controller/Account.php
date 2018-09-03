@@ -48,6 +48,9 @@ class Account extends Base
             $data['per_page']=$res['per_page'];
             $data['current_page']=$res['current_page'];
             $data['last_page']=$res['last_page'];
+            if(!$res['data']){
+                $data['data']=[];
+            }
             foreach($res['data'] as $key => $value) {
                 $data['data'][$key]['id'] = $value['id'];
                 $data['data'][$key]['account_number'] = $value['account_number'];
@@ -121,13 +124,6 @@ class Account extends Base
                  return $this->error('用户名已存在');
              }
          }else{
-//             $model=new Project_admin();
-//             $model->name = $name;
-//             $model->type = 2;
-//             $model->account_number = $account_number;
-//             $model->password = $password;
-//             $model->create_time=time();
-//             $model->save();
              $aid=Project_admin::insertGetId([
                  'p_id'=>$res['p_id'],
                  'account_number'=>$account_number,
@@ -177,12 +173,17 @@ class Account extends Base
             $data['id'] = $res['id'];
             $data['account_number'] = $res['account_number'];
             $data['name'] = $res['name'];
+            if(!$res['device']){
+                $data['data']=[];
+            }
             foreach ($res['device'] as $k=>$v)
             {
                 $data['device'][$k]['device_id'] = $v['device_id'];
                 $data['device'][$k]['device_name'] = $v['device_name'];
+//                $data['device'][$k]['create_time']=$v['create_time'];
             }
-          return $this->success('请求成功','',$data);
+            return $this->success('请求成功','',$data);
+
         }else{
             return $this->error('无权限');
         }

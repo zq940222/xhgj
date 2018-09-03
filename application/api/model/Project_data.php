@@ -21,4 +21,8 @@ class Project_data extends Base
     {
         return $this->prefixImgUrl($value);
     }
+    public function device()
+    {
+        return $this->hasMany('Device','device_id','device_id');
+    }
 }

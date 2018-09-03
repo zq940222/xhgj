@@ -113,4 +113,17 @@ class DataManagement extends BaseController
         $data = Category::all();
         return $this->success('请求成功','',$data);
     }
+
+    public function download()
+    {
+        $name = input('param.name/s','');
+
+
+//判断如果文件存在,则跳转到下载路径
+        if(file_exists($name)){
+            header('location:http://'.$name);
+        }else{
+            header('HTTP/1.1 404 Not Found');
+        }
+    }
 }

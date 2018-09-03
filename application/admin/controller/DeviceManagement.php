@@ -398,6 +398,18 @@ class DeviceManagement extends BaseController
         }
     }
 
+    public function deletePass()
+    {
+        $id = input('post.id/d',0);
+        $res = Passageway::destroy($id);
+        if ($res)
+        {
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
     /**
      * @desc 通道类型列表
      * @throws \think\exception\DbException

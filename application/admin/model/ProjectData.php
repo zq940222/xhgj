@@ -20,4 +20,9 @@ class ProjectData extends BaseModel
     {
         return $this->prefixImgUrl($value);
     }
+
+    public function getContentAttr($value)
+    {
+        return $this->prefixImgUrl($value);
+    }
 }

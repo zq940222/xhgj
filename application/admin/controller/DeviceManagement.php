@@ -338,22 +338,44 @@ class DeviceManagement extends BaseController
 //        $model = new Passageway();
 //        $res = $model->save($passageways);
 
+        $addData = [];
+        $addData['device_id'] = $passageways[0]['device_id'];
+        $addData['a'] = $passageways[0]['a'];
+        $addData['b'] = $passageways[0]['b'];
+
+        $data = [];
         foreach ($passageways as $value)
         {
             $model = new Passageway();
             $model->save($value);
 
-            $modelB = new DeviceRegisterAlias();
-            $modelB->device_id = $value['device_id'];
-            $modelB->passageway_id = $model->id;
-            $modelB->starting_address = $value['start_coding'];
-            $modelB->register_number = $value['end_coding'];
-            $modelB->a = $value['a'];
-            $modelB->b = $value['b'];
-            $modelB->save();
-
+            $data[] = [
+                'id' => $model->id,
+                'starting_address' => $value['start_coding']
+            ];
         }
 
+        array_multisort(array_column($data,'id'),SORT_ASC,$data);
+
+        $addData['passageway_id'] = implode(',',array_column($data,'id'));
+        $addData['starting_address'] = $data[0]['starting_address'];
+        $count = count($passageways);
+        $b = dechex($count);
+        $c = strlen($b);
+        $d = '';
+        for ($i = 0; $i< 4-$c; $i++)
+        {
+            $d .= '0';
+        }
+        $d.=$b;
+        $addData['register_number'] = $d;
+        $modelB = new DeviceRegisterAlias();
+        $modelB->save($addData);
+
+        $modelC = ReadDevice::where('device_id',$passageways[0]['device_id'])->find();
+        $modelC->start_address = $addData['starting_address'];
+        $modelC->register = $d;
+        $modelC->save();
         return $this->success('添加成功');
 
     }
@@ -383,12 +405,12 @@ class DeviceManagement extends BaseController
         $model->switch_alarm = $switch_alarm;
         $res = $model->save();
 
-        $modelB = DeviceRegisterAlias::where('passageway_id',$id)->find();
-        $modelB->starting_address = $start_coding;
-        $modelB->register_number = $end_coding;
-        $modelB->a = $a;
-        $modelB->b = $b;
-        $modelB->save();
+//        $modelB = DeviceRegisterAlias::where('passageway_id',$id)->find();
+//        $modelB->starting_address = $start_coding;
+//        $modelB->register_number = $end_coding;
+//        $modelB->a = $a;
+//        $modelB->b = $b;
+//        $modelB->save();
 
         if ($res)
         {

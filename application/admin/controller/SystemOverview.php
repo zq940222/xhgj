@@ -267,13 +267,16 @@ class SystemOverview extends BaseController
 
     public function test()
     {
-        $array = [
-            'zmkm.png','zmkm.png'
-        ];
-        $model = DeviceLog::get(1);
-        $model->img = $array;
-        $res = $model->save();
-        return $res;
+        $a = 15;
+        $b = dechex($a);
+        $c = strlen($b);
+        $d = '';
+        for ($i = 0; $i< 4-$c; $i++)
+        {
+            $d .= '0';
+        }
+        $d.=$b;
+        return $d;
     }
 
 }

@@ -23,6 +23,7 @@ class UserToken extends Token
         //检查该用户是否存在
         $user = Project_admin::where('account_number','=',$name)
             ->where('password','=',md5($password))
+            ->where('type','in',[1,2])
             ->find();
         if (!$user)
         {
@@ -43,7 +44,6 @@ class UserToken extends Token
         $key = self::generateToken();
         $value = json_encode($cachedValue);
 //        $expire_in = config('setting.token_expire_in');
-
         $request = cache($key, $value);
         if (!$request) {
             throw new Exception([

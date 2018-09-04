@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-08-29 16:42:03
+Date: 2018-09-03 20:24:32
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,7 +23,7 @@ CREATE TABLE `category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(50) NOT NULL DEFAULT '' COMMENT '区域名称',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for device
@@ -34,8 +34,8 @@ CREATE TABLE `device` (
   `project_id` int(10) NOT NULL COMMENT '项目id',
   `ip` char(64) NOT NULL,
   `last_time` int(10) NOT NULL COMMENT '最后通讯时间',
-  `longitude` decimal(10,0) NOT NULL COMMENT '经度',
-  `latitude` decimal(10,0) NOT NULL COMMENT '纬度',
+  `longitude` decimal(10,6) NOT NULL COMMENT '经度',
+  `latitude` decimal(10,6) NOT NULL COMMENT '纬度',
   `maintain_last_worker` varchar(255) NOT NULL COMMENT '最后维护人',
   `install_last_time` int(10) NOT NULL COMMENT '最后安装时间',
   `device_name` varchar(255) NOT NULL COMMENT '设备名称',
@@ -69,7 +69,7 @@ CREATE TABLE `device_data` (
   `data` char(32) NOT NULL COMMENT '数据内容',
   `time` int(10) NOT NULL COMMENT '时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='设备数据表';
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8 COMMENT='设备数据表';
 
 -- ----------------------------
 -- Table structure for device_log
@@ -81,9 +81,9 @@ CREATE TABLE `device_log` (
   `project_id` int(10) NOT NULL COMMENT '设备管理员id',
   `time` int(10) NOT NULL COMMENT '添加时间',
   `log_info` text NOT NULL COMMENT '日志信息',
-  `img` text NOT NULL COMMENT '图片',
+  `img` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='设备(站点)日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 COMMENT='设备(站点)日志表';
 
 -- ----------------------------
 -- Table structure for device_register_alias
@@ -92,19 +92,30 @@ DROP TABLE IF EXISTS `device_register_alias`;
 CREATE TABLE `device_register_alias` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `device_id` char(32) NOT NULL COMMENT '设备编号',
-  `passageway_id` char(128) NOT NULL COMMENT '通道id',
-  `starting_address` char(32) NOT NULL COMMENT '寄存器表示 起始地址',
-  `register_number` char(32) NOT NULL COMMENT '寄存器数量',
-  `change_range` varchar(255) NOT NULL COMMENT '变化范围',
-  `max_range` varchar(255) NOT NULL COMMENT '限制范围',
-  `count_time` int(10) NOT NULL COMMENT '统计时间',
-  `value` char(32) NOT NULL COMMENT '监测值',
-  `change_value` char(32) NOT NULL COMMENT '数据变频值',
-  `alias` varchar(255) NOT NULL COMMENT '数据别名',
-  `a` char(32) NOT NULL COMMENT '计算公式a值',
-  `b` char(32) NOT NULL COMMENT '计算公式b值',
+  `passageway_id` char(128) NOT NULL DEFAULT '' COMMENT '通道id',
+  `starting_address` char(32) NOT NULL DEFAULT '' COMMENT '寄存器表示 起始地址',
+  `end_address` char(32) NOT NULL DEFAULT '' COMMENT '结束编码',
+  `register_number` char(32) NOT NULL DEFAULT '' COMMENT '寄存器数量',
+  `change_range` varchar(255) NOT NULL DEFAULT '' COMMENT '变化范围',
+  `max_range` varchar(255) NOT NULL DEFAULT '' COMMENT '限制范围',
+  `count_time` int(10) NOT NULL DEFAULT '0' COMMENT '统计时间',
+  `value` char(32) DEFAULT NULL COMMENT '监测值',
+  `change_value` char(32) DEFAULT NULL COMMENT '数据变频值',
+  `alias` varchar(255) NOT NULL DEFAULT '' COMMENT '数据别名',
+  `a` char(32) DEFAULT NULL COMMENT '计算公式a值',
+  `b` char(32) DEFAULT NULL COMMENT '计算公式b值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='设备下发指令表';
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='设备下发指令表';
+
+-- ----------------------------
+-- Table structure for log
+-- ----------------------------
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `log` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for passageway
@@ -129,8 +140,9 @@ CREATE TABLE `passageway` (
   `start_coding` varchar(10) NOT NULL DEFAULT '' COMMENT '起始编码',
   `end_coding` varchar(10) NOT NULL DEFAULT '' COMMENT '结束编码',
   `group_count` int(10) NOT NULL DEFAULT '1' COMMENT '获取数据组数',
+  `register_number` char(32) NOT NULL COMMENT '寄存器数量',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='通道表';
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='通道表';
 
 -- ----------------------------
 -- Table structure for passageway_category
@@ -142,7 +154,7 @@ CREATE TABLE `passageway_category` (
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据类型:0=模拟量,1=开关量',
   `data_address` varchar(255) NOT NULL DEFAULT '' COMMENT '数据地址',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for passageway_correlation
@@ -154,6 +166,19 @@ CREATE TABLE `passageway_correlation` (
   `alarm_limit` varchar(10) DEFAULT NULL COMMENT '报警限值',
   PRIMARY KEY (`passageway1_id`,`passageway2_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for passageway_start_address
+-- ----------------------------
+DROP TABLE IF EXISTS `passageway_start_address`;
+CREATE TABLE `passageway_start_address` (
+  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '起始地址数据对应表',
+  `address_y` char(10) DEFAULT NULL COMMENT 'y轴坐标',
+  `address_x` char(10) DEFAULT NULL COMMENT 'x轴坐标',
+  `data` char(10) DEFAULT NULL COMMENT '数据内容',
+  `is_delete` tinyint(1) DEFAULT NULL COMMENT '删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_admin
@@ -171,7 +196,7 @@ CREATE TABLE `project_admin` (
   `type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '1管理员 2巡逻员 0网管',
   `create_time` int(10) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COMMENT='项目管理员表';
 
 -- ----------------------------
 -- Table structure for project_admin_device
@@ -182,7 +207,7 @@ CREATE TABLE `project_admin_device` (
   `device_id` char(32) NOT NULL COMMENT '设备id',
   `project_admin_id` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for project_data
@@ -197,7 +222,7 @@ CREATE TABLE `project_data` (
   `content` text NOT NULL COMMENT '资料内容',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='项目资料表';
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='项目资料表';
 
 -- ----------------------------
 -- Table structure for project_inspect_log
@@ -225,11 +250,11 @@ CREATE TABLE `projects` (
   `project_explain` text NOT NULL COMMENT '项目说明',
   `version` text NOT NULL COMMENT '项目版本信息',
   `logo` char(128) NOT NULL COMMENT '项目logo',
-  `longitude` decimal(10,2) NOT NULL COMMENT '经度',
-  `latitude` decimal(10,2) NOT NULL COMMENT '纬度',
+  `longitude` decimal(10,6) NOT NULL COMMENT '经度',
+  `latitude` decimal(10,6) NOT NULL COMMENT '纬度',
   `province` char(32) NOT NULL COMMENT '省份',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目表';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='项目表';
 
 -- ----------------------------
 -- Table structure for read_device
@@ -238,11 +263,11 @@ DROP TABLE IF EXISTS `read_device`;
 CREATE TABLE `read_device` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `device_id` char(32) NOT NULL COMMENT '设备编号',
-  `mark` char(2) NOT NULL COMMENT '单元标识符',
-  `start_address` char(64) NOT NULL COMMENT '起始地址',
-  `register_number` char(16) NOT NULL COMMENT '寄存器数量',
+  `mark` char(2) NOT NULL DEFAULT '01' COMMENT '单元标识符',
+  `start_address` char(64) DEFAULT NULL COMMENT '起始地址',
+  `register_number` char(16) DEFAULT NULL COMMENT '寄存器数量',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='设备读指令表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='设备读指令表';
 
 -- ----------------------------
 -- Table structure for update_device

@@ -13,6 +13,7 @@ use app\admin\model\Device;
 use app\admin\model\DeviceRegisterAlias;
 use app\admin\model\Passageway;
 use app\admin\model\PassagewayCategory;
+use app\admin\model\PassagewayStartAddress;
 use app\admin\model\Projects;
 use app\admin\model\ReadDevice;
 use think\Db;
@@ -348,7 +349,9 @@ class DeviceManagement extends BaseController
         {
             $model = new Passageway();
             $model->save($value);
-
+            $cate_id = $value['category_id'];
+            $cate = PassagewayCategory::get($cate_id);
+            $type = $cate['type'];
             $data[] = [
                 'id' => $model->id,
                 'starting_address' => $value['start_coding']
@@ -369,6 +372,7 @@ class DeviceManagement extends BaseController
         }
         $d.=$b;
         $addData['register_number'] = $d;
+        $addData['type'] = $type;
         $modelB = new DeviceRegisterAlias();
         $modelB->save($addData);
 
@@ -538,6 +542,33 @@ class DeviceManagement extends BaseController
         $model->max_range = $max_range;
         $model->change_range_min = $change_range_min;
         $model->change_range_max = $change_range_max;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('设置成功');
+        }else{
+            return $this->error('设置失败');
+        }
+    }
+
+    public function registerList()
+    {
+        $type = input('param.type/d',-1);
+        $data = PassagewayStartAddress::order('id asc')->where('type',$type)->select();
+        return $data;
+    }
+
+    public function addRegister()
+    {
+        $y = input('post.y','');
+        $x = input('post.x','');
+        $data = input('post.data/s','');
+        $type = 0;
+        $model = new PassagewayStartAddress();
+        $model->address_y = $y;
+        $model->address_y = $x;
+        $model->data = $data;
+        $model->type = $type;
         $res = $model->save();
         if ($res)
         {

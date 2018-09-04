@@ -177,12 +177,13 @@ class SystemOverview extends BaseController
         $data = DeviceLog::with(['projectAdmin'])
             ->order('time desc')->where('device_id',$deviceID)->select();
         foreach ($data as &$value)
-        {
-            if (!$value['project_admin'])
             {
-                $value['project_admin'] = [];
+                if (!$value['project_admin'])
+                {
+                    $value['project_admin'] = [];
+                }
             }
-        }
+
         return $this->success('请求成功','',$data);
     }
 

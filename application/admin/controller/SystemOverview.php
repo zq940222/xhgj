@@ -244,8 +244,8 @@ class SystemOverview extends BaseController
 
     public function addLog()
     {
-//        $uid = UserToken::getCurrentUid();
-        $uid = 1;
+        $uid = UserToken::getCurrentUid();
+//        $uid = 1;
         $deviceID = input('post.device_id/s','');
         $img = input('post.img/a',[]);
         $content = input('post.content/s','');

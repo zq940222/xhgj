@@ -10,6 +10,7 @@ namespace app\api\service;
 
 //use app\api\lib\exception\ForbiddenException;
 //use app\api\lib\exception\TokenException;
+use app\library\ApiException;
 use think\Cache;
 use think\Exception;
 use think\Request;
@@ -33,8 +34,9 @@ class Token
             ->header('token');
         $vars = Cache::get($token);
         if (!$vars) {
-            throw new Exception();
-
+            throw new ApiException([
+                'msg'=> '登录已过期'
+            ]);
         }
         else{
             if (!is_array($vars)) {

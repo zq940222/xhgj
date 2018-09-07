@@ -180,6 +180,16 @@ class DeviceManagement extends BaseController
         $accendant_department = input('post.accendant_department/s','');
         $accendant_email = input('post.accendant_email/s','');
         $accendant_mobile = input('post.accendant_mobile/s','');
+        $longitude = input('post.longitude/s','');
+        $latitude = input('post.latitude/s','');
+        $video_url = input('post.video_url/s','');
+        $is_old = input('post.is_old/d',0);
+
+        $modelA = Device::get($deviceID);
+        if ($modelA)
+        {
+            return $this->error('编号重复');
+        }
 
         $model = new Device();
         $model->device_name = $deviceName;
@@ -194,6 +204,10 @@ class DeviceManagement extends BaseController
         $model->accendant_department = $accendant_department;
         $model->accendant_email = $accendant_email;
         $model->accendant_mobile = $accendant_mobile;
+        $model->longitude = $longitude;
+        $model->latitude = $latitude;
+        $model->video_url = $video_url;
+        $model->is_old = $is_old;
         $res = $model->save();
 
         $readDeviceModel = new ReadDevice();
@@ -284,11 +298,21 @@ class DeviceManagement extends BaseController
         $communicationdistance = input('post.communicationdistance/d',1);
         $ip = input('post.ip/s','');
         $port_number = input('post.port_number/s','');
+        $work_pattern = input('post.work_pattern/s','');
+        $reset_logo = input('post.reset_logo/s','');
+        $switch = input('post.function_switch/s','');
+        $initial_channel = input('post.initial_channel/s','');
+        $measurement_channel_number = input('post.measurement_channel_number/d',0);
 
         $model = Device::get($deviceID);
         $model->communicationdistance = $communicationdistance;
         $model->ip = $ip;
         $model->port_number = $port_number;
+        $model->work_pattern = $work_pattern;
+        $model->reset_logo = $reset_logo;
+        $model->switch = $switch;
+        $model->initial_channel = $initial_channel;
+        $model->measurement_channel_number = $measurement_channel_number;
         $res = $model->save();
         if ($res)
         {
@@ -377,8 +401,12 @@ class DeviceManagement extends BaseController
         $modelB->save($addData);
 
         $modelC = ReadDevice::where('device_id',$passageways[0]['device_id'])->find();
+        if (!$modelC)
+        {
+            $modelC = new ReadDevice();
+        }
         $modelC->start_address = $addData['starting_address'];
-        $modelC->register = $d;
+        $modelC->register_number = $d;
         $modelC->save();
         return $this->success('添加成功');
 
@@ -391,9 +419,6 @@ class DeviceManagement extends BaseController
     public function editPass()
     {
         $name = input('post.name/s','');
-        $category_id = input('post.category_id/d',0);
-        $start_coding = input('post.start_coding/s','');
-        $end_coding = input('post.end_coding/s','');
         $a = input('post.a/d',1);
         $b = input('post.b/d',0);
         $switch_alarm = input('post.switch_alarm/d',0);
@@ -401,20 +426,10 @@ class DeviceManagement extends BaseController
 
         $model = Passageway::get($id);
         $model->name = $name;
-        $model->category_id = $category_id;
-        $model->start_coding = $start_coding;
-        $model->end_coding = $end_coding;
         $model->a = $a;
         $model->b = $b;
         $model->switch_alarm = $switch_alarm;
         $res = $model->save();
-
-//        $modelB = DeviceRegisterAlias::where('passageway_id',$id)->find();
-//        $modelB->starting_address = $start_coding;
-//        $modelB->register_number = $end_coding;
-//        $modelB->a = $a;
-//        $modelB->b = $b;
-//        $modelB->save();
 
         if ($res)
         {
@@ -520,20 +535,28 @@ class DeviceManagement extends BaseController
         $max_range = input('post.max_range/s','');
         $change_range_min = input('post.change_range_min/s','');
         $change_range_max = input('post.change_range_max/s','');
-        $alarm_limit = input('post.alarm_limit/s','');
-        $passageways = input('post.passageways/a',[]);
-        if ($alarm_limit && $passageways)
+        $alarm_limit_min = input('post.alarm_limit_min');
+        $alarm_limit_max = input('post.alarm_limit_max');
+        $a = input('post.a/s','');
+        $b = input('post.b/s','');
+
+        $passageways = input('post.passageway_id/d',0);
+        $mark = input('post.mark/s','');
+        $code = input('post.code/s','');
+        $address_code = input('post.address_code/s','');
+        $value = input('post.value/s','');
+        if ($alarm_limit_min && $alarm_limit_max && $passageways)
         {
             Db::name('PassagewayCorrelation')->where('passageway1_id|passageway2_id',$pass_id)->delete();
-            $addData = [];
-            foreach ($passageways as $value)
-            {
+
                 $addData[] = [
                     'passageway1_id' => $pass_id,
-                    'passageway2_id' => $value,
-                    'alarm_limit' => $alarm_limit
+                    'passageway2_id' => $passageways,
+                    'alarm_limit_min' => $alarm_limit_min,
+                    'alarm_limit_max' => $alarm_limit_max,
+                    'a' => $a,
+                    'b' => $b
                 ];
-            }
             Db::name('PassagewayCorrelation')->insertAll($addData);
         }
 
@@ -542,6 +565,10 @@ class DeviceManagement extends BaseController
         $model->max_range = $max_range;
         $model->change_range_min = $change_range_min;
         $model->change_range_max = $change_range_max;
+        $model->mark = $mark;
+        $model->code = $code;
+        $model->address_code = $address_code;
+        $model->value_num = $value;
         $res = $model->save();
         if ($res)
         {
@@ -578,4 +605,11 @@ class DeviceManagement extends BaseController
         }
     }
 
+    public function video($device_id)
+    {
+        $res = Device::get($device_id);
+        $url = $res['video_url'];
+        $url = explode(',',$url);
+        return ['url'=>$url];
+    }
 }

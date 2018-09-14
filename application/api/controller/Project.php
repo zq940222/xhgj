@@ -44,6 +44,7 @@ class Project  extends Base
                      'longitude' => $value['longitude'],
                      'latitude' => $value['latitude'],
                      'province' => $value['province'],
+                     'logo' => $value['logo'],
                  ];
              }
          return $this->success('请求成功','',$data);

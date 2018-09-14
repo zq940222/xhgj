@@ -245,7 +245,7 @@
 					<input type="number" placeholder="y" class="input_show_count" id="y">
 				</div>
 				<div>
-					<input type="text" required lay-verify="required" placeholder="通道编号" autocomplete="off" class="input_show_count" id="tdbh">
+					<input type="text"  placeholder="单元标识符" autocomplete="off" class="input_show_count" id="tdbh">
 				</div>
 			</div>
 			<div class="add_command_box">
@@ -254,8 +254,8 @@
 						<div class="way_info_box">
 							<h3 class="way_info">通道</h3>
 							<div>
-								<input type="text" name="name" required lay-verify="required" placeholder="通道名称" autocomplete="off" class="input_show_count">
-								<input type="text" name="start_coding" required lay-verify="required" placeholder="通道编号" autocomplete="off" class="input_show_count" disabled>
+								<input type="text" name="name"  placeholder="通道名称" autocomplete="off" class="input_show_count">
+								<input type="text" name="mark"  placeholder="单元标识符" autocomplete="off" class="input_show_count" disabled>
 							</div>
 							<div class="inputxx" style="display: none;">
 								<input name="registera" placeholder="选择类型" class="input_show_count" id="inatfast" disabled>
@@ -265,8 +265,8 @@
 							</div>
 							<div class="inputxy">
 								<input name="registerb" placeholder="输入类型内容" class="input_show_count">
-								<input placeholder="x" class="input_show_count inputx" disabled>
-								<input placeholder="y" class="input_show_count inputy" disabled>
+								<input name="x" placeholder="x" class="input_show_count inputx" disabled>
+								<input name="y" placeholder="y" class="input_show_count inputy" disabled>
 							</div>
 							<div class="show_count_input_box">
 								<h3 class="show_count">显示计算<br><span>格式为y=ax+b , 请设置a和b的值</span></h3>
@@ -295,7 +295,7 @@
 	<script src="../../js/http.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		var device_id = store.get('device_id');
-		var stateid = 0,
+		var stateid = 0,//自定义类型
 			x, y, //xy初始
 			stateobj, //类型数组
 			stateobjlen = 0, //类型长度
@@ -312,7 +312,7 @@
 			var command;
 			$(".add_one_command").click(function() {
 				mudtype();				
-				if(stateid == 0) { //之定义类型
+				//if(stateid == 0) { //之定义类型
 					//请求发送添加类别
 					var lenes = $('.add_command_box').find('.inputxy').length;
 					var conlen = $('.add_command_box').find('.inputxy').eq(lenes - 1).find('input').eq(0).val();
@@ -353,13 +353,13 @@
 						'<div class="way_info_box">' +
 						'<h3 class="way_info">通道</h3>' +
 						'<div>' +
-						'<input type="text" name="name" required lay-verify="required" placeholder="通道名称" autocomplete="off" class="input_show_count">' +
-						'<input type="text" name="start_coding" required lay-verify="required" placeholder=' + tdbh + '  value=' + tdbh + ' autocomplete="off" class="input_show_count" disabled>' +
+						'<input type="text" name="name"  placeholder="通道名称" autocomplete="off" class="input_show_count">' +
+						'<input type="text" name="mark"  placeholder=' + tdbh + '  value=' + tdbh + ' autocomplete="off" class="input_show_count" disabled>' +
 						'</div>' +
 						'<div class="inputxy  ' + tpya + '">' +
-						'<input name="registerb" placeholder="输入类型内容" class="input_show_count" disabled>' +
-						'<input placeholder=' + onx + ' value=' + onx + ' class="input_show_count inputx"  disabled>' +
-						'<input placeholder=' + ony + ' value=' + ony + ' class="input_show_count inputy" disabled>' +
+						'<input name="registerb" placeholder="输入类型内容" class="input_show_count">' +
+						'<input name="x" placeholder=' + onx + ' value=' + onx + ' class="input_show_count inputx"  disabled>' +
+						'<input name="y" placeholder=' + ony + ' value=' + ony + ' class="input_show_count inputy" disabled>' +
 						'</div>' +
 						'<div class="inputkg ' + tpyb + '">' +
 						'<input name="switch_id" placeholder="开关量id" class="input_show_count">' +
@@ -375,38 +375,38 @@
 						'</div>' +
 						'</div>' +
 						'</div>';
-				} else {					
-					stateobjlen = parseInt(stateobjlen) + 1;
-					if(stateobj[stateobjlen] == undefined) {
-						alert('没有更多类别了');
-						return false
-					};
-					command = '<div class="add_command">' +
-						'<div class="add_way_box">' +
-						'<div class="way_info_box">' +
-						'<h3 class="way_info">通道</h3>' +
-						'<div>' +
-						'<input type="text" name="name" required lay-verify="required" placeholder="通道名称" autocomplete="off" class="input_show_count">' +
-						'<input type="text" name="start_coding" required lay-verify="required" placeholder=' + tdbh + '  value=' + tdbh + ' autocomplete="off" class="input_show_count" disabled>' +
-						'</div>' +
-						'<div class="inputxx">' +
-						'<input name="registera" placeholder=' + stateobj[stateobjlen].data + ' value=' + stateobj[stateobjlen].data + ' class="input_show_count" disabled>' +
-						'</div>' +
-						'<div class="inputkg ' + tpyb + '">' +
-						'<input name="switch_id" placeholder="开关量id" class="input_show_count">' +
-						'</div>' +
-						'<div class="show_count_input_box">' +
-						'<h3 class="show_count">显示计算<br><span>格式为y=ax+b , 请设置a和b的值</span></h3>' +
-						'<div>' +
-						'<input type="number" name="a"  placeholder="输入a值" autocomplete="off" class="input_show_count ' + tpya + '">' +
-						'<input type="number" name="b"  placeholder="输入b值" autocomplete="off" class="input_show_count ' + tpya + '">' +
-						'<input type="switch_alarm" name="switch_alarm"  placeholder="开关量报警值" autocomplete="off" class="input_show_count ' + tpyb + '">' +
-						'</div>' +
-						'</div>' +
-						'</div>' +
-						'</div>' +
-						'</div>';
-				};
+//				} else {					
+//					stateobjlen = parseInt(stateobjlen) + 1;
+//					if(stateobj[stateobjlen] == undefined) {
+//						alert('没有更多类别了');
+//						return false
+//					};
+//					command = '<div class="add_command">' +
+//						'<div class="add_way_box">' +
+//						'<div class="way_info_box">' +
+//						'<h3 class="way_info">通道</h3>' +
+//						'<div>' +
+//						'<input type="text" name="name"  placeholder="通道名称" autocomplete="off" class="input_show_count">' +
+//						'<input type="text" name="mark"  placeholder=' + tdbh + '  value=' + tdbh + ' autocomplete="off" class="input_show_count" disabled>' +
+//						'</div>' +
+//						'<div class="inputxx">' +
+//						'<input name="registera" placeholder=' + stateobj[stateobjlen].data + ' value=' + stateobj[stateobjlen].data + ' class="input_show_count" disabled>' +
+//						'</div>' +
+//						'<div class="inputkg ' + tpyb + '">' +
+//						'<input name="switch_id" placeholder="开关量id" class="input_show_count">' +
+//						'</div>' +
+//						'<div class="show_count_input_box">' +
+//						'<h3 class="show_count">显示计算<br><span>格式为y=ax+b , 请设置a和b的值</span></h3>' +
+//						'<div>' +
+//						'<input type="number" name="a"  placeholder="输入a值" autocomplete="off" class="input_show_count ' + tpya + '">' +
+//						'<input type="number" name="b"  placeholder="输入b值" autocomplete="off" class="input_show_count ' + tpya + '">' +
+//						'<input type="switch_alarm" name="switch_alarm"  placeholder="开关量报警值" autocomplete="off" class="input_show_count ' + tpyb + '">' +
+//						'</div>' +
+//						'</div>' +
+//						'</div>' +
+//						'</div>' +
+//						'</div>';
+//				};
 				//去除
 				$('#statek').remove();
 				mudtype();
@@ -420,15 +420,15 @@
 				var form = layui.form;
 				form.on('select(rep)', function(data) {
 					console.log(data);
-					if(data.value == 0) {
-						$('.inputxx').css('display', 'none');
-						$('.inputxy').css('display', 'block');
-						stateid = 0;
-					} else {
-						$('.inputxx').css('display', 'block');
-						$('.inputxy').css('display', 'none');
-						stateid = 1;
-					};
+//					if(data.value == 0) {
+//						$('.inputxx').css('display', 'none');
+//						$('.inputxy').css('display', 'block');
+//						stateid = 0;
+//					} else {
+//						$('.inputxx').css('display', 'block');
+//						$('.inputxy').css('display', 'none');
+//						stateid = 1;
+//					};
 					mudtype();
 					$.ajax({
 						type: "GET",
@@ -482,7 +482,7 @@
 		//监听输入
 		$('#tdbh').bind('input propertychange', function() {
 			tdbh = $(this).val();
-			$("input[name='start_coding']").val(tdbh);
+			$("input[name='mark']").val(tdbh);
 		});
 		//判断分装
 		var contentmud = function(_this, e) {
@@ -527,11 +527,11 @@
 				$('body').find('.amub').css('display', 'block');
 				$('body').find('.bmub').css('display', 'block');
 				$('body').find('.cmub').css('display', 'none');
-				if (stateid ==1) {
+				//if (stateid ==1) {
 					$('.inputxy').css('display', 'none');
-				} else{
+				//} else{
 					$('.inputxy').css('display', 'block');
-				}				
+				//}				
 				$('.inputkg').css('display', 'none');
 				tpya = 'w_tpy',
 				tpyb = 'h_tpy';
@@ -611,17 +611,21 @@
 					var con = new Object;
 					con.device_id = device_id; //设备编号
 					con.name = $("input[name='name']").eq(i).val(); //通道名称
-					con.start_coding = $("input[name='start_coding']").eq(i).val(); //通道编码a
+					con.mark = $("input[name='mark']").eq(i).val(); //通道编码
+					con.switch_id= '';
 					if(stateid == 0) {
 						con.register = $("input[name='registerb']").eq(i).val(); //类型内容
 					} else {
 						con.register = $("input[name='registera']").eq(i).val(); //类型内容
 					};
+					con.x = $("input[name='x']").eq(i).val(); //x
+					con.y = $("input[name='y']").eq(i).val(); //y
 					con.a = $("input[name='a']").eq(i).val(); //a
 					con.b = $("input[name='b']").eq(i).val(); //b
 					con.switch_alarm = ''; //开关量报警值
 					con.end_coding = ''; //通道编码b
 					con.category_id = cat_id; //通道类型ID
+					con.start_coding = '';//空余字段
 					passageways.push(con);
 				};
 			} else {//开关量
@@ -629,18 +633,21 @@
 					var con = new Object;
 					con.device_id = device_id; //设备编号
 					con.name = $("input[name='name']").eq(i).val(); //通道名称
-					con.start_coding = $("input[name='start_coding']").eq(i).val(); //通道编码a
+					con.mark = $("input[name='mark']").eq(i).val(); //通道编码
 					con.switch_id = $("input[name='switch_id']").eq(i).val();
 					if(stateid == 0) {
 						con.register = ''; //类型内容
 					} else {
 						con.register = $("input[name='registera']").eq(i).val(); //类型内容
 					}
+					con.x = ''; //x
+					con.y = ''; //y
 					con.a = ''; //a
 					con.b = ''; //b
 					con.switch_alarm = $("input[name='switch_alarm']").eq(i).val(); //开关量报警值
 					con.end_coding = ''; //通道编码b
 					con.category_id = cat_id //通道类型ID
+					con.start_coding = '';//空余字段
 					passageways.push(con);
 				};
 			};

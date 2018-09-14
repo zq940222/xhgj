@@ -10,6 +10,7 @@
     <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="../../css/font.css">
     <link rel="stylesheet" href="../../css/xadmin.css">
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <script type="text/javascript" src="../../js/jquery.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../../js/xadmin.js" charset="utf-8"></script>
     <script type="text/javascript" src="../../lib/layui/layui.js" charset="utf-8"></script>
@@ -191,8 +192,8 @@
         height: 280px;
         padding: 0 12px;
         margin: 20px 30px 0;
-        overflow-x: hidden;
-        overflow-y: auto;
+        /*overflow-x: hidden;*/
+        /*overflow-y: auto;*/
       }
       .model_content::-webkit-scrollbar {
         display:none
@@ -535,7 +536,7 @@
           <div class="upload_img_data">
             <div>
               <button type="button" class="button_click">上传资料</button>
-              <span>支持pdf和图片两种格式</span>
+              <span>支持pdf和word文档两种格式</span>
             </div>
             <ul class="add_way" lay-verify="required">
               <!-- <li>
@@ -579,7 +580,7 @@
           <div class="upload_img_data">
             <div>
               <button type="button" class="button_click">修改资料</button>
-              <span>支持pdf和图片两种格式</span>
+              <span>支持pdf和word文档两种格式</span>
             </div>
             <ul class="add_way" lay-verify="required">
               <!-- <li>
@@ -713,7 +714,7 @@
   });
   // 综合监测ajax请求
   var count;
-  $(function getIntegratedData(){
+  // $(function getIntegratedData(){
     $.ajax({
       type: "GET",
       url: _http + "/admin/data_management/dataList",
@@ -752,18 +753,20 @@
                   var _data= data.data.data;
                   var _html='';
                   var _station = '';
+                  var href = '';
+                  var filename = '';
                   for (var i=0;i<_data.length;i++) {
                     // 字符内容转变成blob地址,文件下载地址
-                    console.log("文件下载地址content:"+_data[i].content)
-                    var blob = new Blob([_data[i].content]);
-                    var href = URL.createObjectURL(blob);
+                    // console.log("文件下载地址content:"+_data[i].content)
+                    // var blob = new Blob([_data[i].content]);
+                    // href = URL.createObjectURL(blob);
+                    href = _data[i].content;
                     //  正则替换取文件下载地址后缀,拼接文件名字
-                    var filename = _data[i].title + _data[i].content.replace(/^.+\./,'.');
+                    filename = _data[i].title + _data[i].content.replace(/^.+\./,'.');
                     console.log("文件下载地址href:"+href)
                     console.log("文件下载filename:"+filename)
                     // 时间格式转换
                     var create_time = new Date(parseInt(_data[i].create_time) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
-                    // var ontime = new Date(parseInt(_data[i].maintain_last_time) * 1000).toLocaleString().replace(/:\d{1,2}$/,' '); 
                     _html += "<tr><td><img class='logos_size' src='"+_data[i].cover+"' alt=''></td><td>"+_data[i].title+"</td><td>"+_data[i].category.name+"</td><td>"+create_time+"</td><td><span class='limit_change' data-id='"+_data[i].id+"' data-title='"+_data[i].title+"' data-content='"+_data[i].content+"'>修改</span><span class='limit_set' data-content='"+_data[i].content+"'><a href='"+href+"' download='"+filename+"'>下载</a></span><span class='limit_cancel' data-id='"+_data[i].id+"' style='color: #FF4E48;'>删除</span></td></tr>";
                   };
                   $('#contentthis').html(_html);
@@ -779,13 +782,13 @@
       }
     });
     // 综合监测
-    $(".data_integrated").click(function(){
-      // 数据分页
-      $(this).addClass("layui-this").siblings().removeClass("layui-this");
-      $('#contentthis').html("");   //清空数据
-      getIntegratedData();
-    });
-  });
+    // $(".data_integrated").click(function(){
+    //   // 数据分页
+    //   $(this).addClass("layui-this").siblings().removeClass("layui-this");
+    //   $('#contentthis').html("");   //清空数据
+    //   getIntegratedData();
+    // });
+  // });
   // 分项监测
   $(".data_itemized").click(function(){
     // 数据分页
@@ -829,13 +832,16 @@
                   var _data= data.data.data;
                   var _html='';
                   var _station = '';
+                  var href = '';
+                  var filename = '';
                   for (var i=0;i<_data.length;i++) {
                     // 字符内容转变成blob地址,文件下载地址
-                    console.log("文件下载地址content:"+_data[i].content)
-                    var blob = new Blob([_data[i].content]);
-                    var href = URL.createObjectURL(blob);
+                    // console.log("文件下载地址content:"+_data[i].content)
+                    // var blob = new Blob([_data[i].content]);
+                    // var href = URL.createObjectURL(blob);
+                    href = _data[i].content;
                     //  正则替换取文件下载地址后缀,拼接文件名字
-                    var filename = _data[i].title + _data[i].content.replace(/^.+\./,'.');
+                    filename = _data[i].title + _data[i].content.replace(/^.+\./,'.');
                     console.log("文件下载地址href:"+href)
                     console.log("文件下载filename:"+filename)
                     // 时间格式转换
@@ -868,7 +874,6 @@
       $("#model").show();
       $(".show_add_quyu").hide();
       // var content = $(this).attr("data-content");
-      console.log("title:",title,"category_id",categoryid,"content:",content)
       layer.open({
         type: 1,
         title: '上传资料',
@@ -877,6 +882,7 @@
         btn: ['确认上传'],
         yes: function(index,layero){
           title = $(".upload_fiel_name").val();
+          console.log("title:",title,"category_id",categoryid,"content:",content)
           console.log("title:",title)
           if(categoryid != ""){   //通道id必选
             $.ajax({
@@ -904,30 +910,6 @@
           window.location.reload();
         }
       });
-      // 上传文件
-      // var uploadInst = upload.render({
-      //   elem: '.button_click',
-      //   url: _http + '/admin/upload/upload',
-      //   multiple: true,   //允许多图片上传,默认不允许
-      //   number: 10,   //上传图片个数,默认一张
-      //   before: function(obj){
-      //     //预读本地文件示例，不支持ie8
-      //     obj.preview(function(index, file, result){
-      //       // $('.upload_img_size').attr('src', result); //图片链接（base64）
-      //       console.log("index:",index,",file-name:",file.name,",file-size:",file.size,",result:",result)
-      //       if($('.add_upload_img_box').children('img').length < 10){
-      //         $('.add_upload_img_box').append("<img class='upload_img_size' src='"+result+"' alt=''>");
-      //       };
-      //     });
-      //   },
-      //   done: function(res){
-      //     //上传成功
-      //     console.log("上传成功:",res)
-      //   },
-      //   error: function(err){
-      //     console.log("上传失败:",err)
-      //   }
-      // });
     });
     // 修改资料
     $("#model_modification").hide();
@@ -977,18 +959,7 @@
     // $("#contentthis").on("click",".limit_set",function(){
     //   var content = $(this).attr("data-content");
     //   console.log("下载content:",content)
-    //   $.ajax({
-    //     type: "POST",
-    //     url: _http + "/admin/data_management/download",
-    //     dataType: 'json',
-    //     data: {
-    //       name: content
-    //     },
-    //     success: function(data) {
-    //       // window.location.reload();
-    //       console.log("下载success",data)
-    //     }
-    //   });
+    //     window.open("https://codeload.github.com/douban/douban-client/legacy.zip/master");
     // });
     // 删除
     $("#contentthis").on("click",".limit_cancel",function(){
@@ -1016,7 +987,7 @@
       elem:".button_click",
       // exts:"jpg|png|gif|bmp|jpeg|pdf",
       accept:"file",
-      // auto: true, //选择文件后自动上传
+      auto: true, //选择文件后自动上传
       url: _http + "/admin/upload/upload", //上传接口
       before: function(obj){
         var files = obj.pushFile();   //将每次选择的文件追加到文件队列
@@ -1031,6 +1002,7 @@
       },
       error: function(){
         //请求异常回调
+        console.log('上传文件失败')
       }
     });
   });

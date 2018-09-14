@@ -16,6 +16,16 @@
 		<script src="./lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="./js/xadmin.js"></script>
 	</head>
+	<style type="text/css">
+		@media only screen and (max-width: 1600px) {
+			.left-nav #nav li {
+				height: 90px;
+			}
+			.left-nav #nav li a {
+				padding: 8px 17px 8px 17px;
+			}	
+		}
+	</style>
 
 	<body>
 		<!-- 顶部开始 -->
@@ -119,7 +129,7 @@
 		var time = today.getFullYear() + "年" + (today.getMonth() + 1) + "月" + today.getDate() + "日，" + today.getHours() + "时" + today.getMinutes() + "分" + today.getSeconds() + "秒" + "，星期" + today.getDay();
 		$('.logotext').find('span').eq(0).text("您好现在是:" + time);
 		//判断登录
-		if (_token==undefined) {
+		if(_token == undefined) {
 			window.location.href = 'login.html';
 		};
 		//		$.ajax({

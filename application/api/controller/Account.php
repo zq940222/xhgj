@@ -59,6 +59,7 @@ class Account extends Base
                 foreach ($value['device'] as $v)
                 {
                     $data['data'][$key]['device_name'][] = $v['device_name'];
+                    $data['data'][$key]['device_id'][] = $v['device_id'];
                 }
                 $data['data'][$key]['time'] = $value['create_time'];
             }
@@ -91,15 +92,17 @@ class Account extends Base
             $info=Device::where('project_id',$res['p_id'])
                 ->field('device_id')
                 ->select();
-            foreach ($info as $v){
-                $list=Project_admin_device::where('device_id',$v['device_id'])
-                    ->where('project_admin_id',$id)->delete();
-            }
-            if($list){
-                return $this->success('删除成功','');
-            }else{
-                return $this->error('删除失败');
-            }
+
+           foreach ($info as $k=>$v){
+               $list=Project_admin_device::where('device_id',$v['device_id'])
+                   ->where('project_admin_id',$id)->delete();
+           }
+           $list2=Project_admin::where('id',$id)->where('p_id',$res['p_id'])->update(['p_id'=>null]);
+           if( $list2&&$list){
+                return $this->success('删除成功','',$list);
+           }else{
+               return $this->error('删除失败','',$list2);
+           }
 
         }else{
             return $this->error('无权限');

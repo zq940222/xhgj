@@ -197,11 +197,9 @@
 				margin-top: 30px;
 				float: left;
 			}
-			.station_way_bottom div{
-				margin-bottom: 20px;
-			}
+			
 			.station_way_log {
-				width:1040px;
+				width: 60%;
 				height: 202px;
 				background: #FFFFFF;
 				margin-right: 2%;
@@ -256,7 +254,7 @@
 			/*站点基本信息*/
 			
 			.station_base_info {
-				width: 350px;
+				width: 20%;
 				float: left;
 				background: #FFFFFF;
 				margin-right: 2%;
@@ -276,7 +274,7 @@
 			/*管理人员信息*/
 			
 			.station_user_info {
-				width: 260px;
+				width: 15%;
 				float: left;
 				background: #FFFFFF;
 			}
@@ -354,7 +352,7 @@
 					<span><i v-text="switchingstate(val.category.type,val.value,val.switch_alarm)"></i></span>
 					<img v-if="val.category.type != 0" v-bind:src="anniustate(val.value,val.switch_alarm)" />
 				</div>
-				<div class="station_way_into" v-on:click="pageinto(val.id)">
+				<div class="station_way_into" v-if="val.category.type == 0" v-on:click="pageinto(val.id)">
 					<img src="../../images/icon_lsqx.svg" />
 					<span>历史曲线</span>
 				</div>

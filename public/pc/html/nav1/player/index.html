@@ -67,48 +67,26 @@
 			<!--<div class="video3" id="video"></div>-->
 		</div>
 	</body>
-	<script src="../../../js/store.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../../js/http.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		var device_id = store.get('device_id'); //站点
-		var videourl;
-		var len;
-		$.ajax({
-			type: "POST",
-			url: _http + "/admin/device_management/video",
-			dataType: 'json',
-			data: {
-				device_id:device_id
-			},
-			success: function(data) {
-				console.log(data);
-				len = data.url.length;
-				var html = '';
-				for(var i = 0; i < len; i++) {
-					var lens = len;
-					if(len == 5) {
-						lens = 6
-					};
-					if(len == 7) {
-						lens = 8
-					};
-					html += '<div class="video' + lens + '" id="video' + i + '"></div>';
-				}
-				document.getElementsByClassName('video')[0].innerHTML = html;
-				videolook(len,data.url);
-			},
-			error: function(data) {
-				return false
-			}
-		});
-		function videolook(len,e){
+		var len = 8;
+		var html = '';
+		for(var i = 0; i < len; i++) {
+			var lens = len;
+			if(len == 5) {
+				lens = 6
+			};
+			if(len == 7) {
+				lens = 8
+			};
+			html += '<div class="video' + lens + '" id="video' + i + '"></div>';
+		}
+		document.getElementsByClassName('video')[0].innerHTML = html;
 		if(len == 1) {
 			var videoObject = {
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 		} else if(len == 2) {
@@ -116,14 +94,14 @@
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 			var videoObject1 = {
 				container: '#video1', //容器的ID或className
 				variable: 'player1',
 				autoplay: true, //是否自动播放
-				video: e[1]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player1 = new chplayer(videoObject1);
 		} else if(len == 3) {
@@ -131,239 +109,238 @@
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 			var videoObject1 = {
 				container: '#video1', //容器的ID或className
 				variable: 'player1',
 				autoplay: true, //是否自动播放
-				video: e[1]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player1 = new chplayer(videoObject1);
 			var videoObject2 = {
 				container: '#video2', //容器的ID或className
 				variable: 'player2',
 				autoplay: true, //是否自动播放
-				video: e[2]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player2 = new chplayer(videoObject2);
-		} else if(len == 4) {
+		}else if(len == 4) {
 			var videoObject = {
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 			var videoObject1 = {
 				container: '#video1', //容器的ID或className
 				variable: 'player1',
 				autoplay: true, //是否自动播放
-				video: e[1]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player1 = new chplayer(videoObject1);
 			var videoObject2 = {
 				container: '#video2', //容器的ID或className
 				variable: 'player2',
 				autoplay: true, //是否自动播放
-				video: e[2]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player2 = new chplayer(videoObject2);
 			var videoObject3 = {
 				container: '#video3', //容器的ID或className
 				variable: 'player3',
 				autoplay: true, //是否自动播放
-				video: e[3]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player3 = new chplayer(videoObject3);
-		} else if(len == 5) {
+		}else if(len == 5) {
 			var videoObject = {
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 			var videoObject1 = {
 				container: '#video1', //容器的ID或className
 				variable: 'player1',
 				autoplay: true, //是否自动播放
-				video: e[1]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player1 = new chplayer(videoObject1);
 			var videoObject2 = {
 				container: '#video2', //容器的ID或className
 				variable: 'player2',
 				autoplay: true, //是否自动播放
-				video: e[2]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player2 = new chplayer(videoObject2);
 			var videoObject3 = {
 				container: '#video3', //容器的ID或className
 				variable: 'player3',
 				autoplay: true, //是否自动播放
-				video: e[3]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player3 = new chplayer(videoObject3);
 			var videoObject4 = {
 				container: '#video4', //容器的ID或className
 				variable: 'player4',
 				autoplay: true, //是否自动播放
-				video: e[4]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player4 = new chplayer(videoObject4);
-		} else if(len == 6) {
+		}else if(len == 6) {
 			var videoObject = {
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 			var videoObject1 = {
 				container: '#video1', //容器的ID或className
 				variable: 'player1',
 				autoplay: true, //是否自动播放
-				video: e[1]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player1 = new chplayer(videoObject1);
 			var videoObject2 = {
 				container: '#video2', //容器的ID或className
 				variable: 'player2',
 				autoplay: true, //是否自动播放
-				video: e[2]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player2 = new chplayer(videoObject2);
 			var videoObject3 = {
 				container: '#video3', //容器的ID或className
 				variable: 'player3',
 				autoplay: true, //是否自动播放
-				video:e[3]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player3 = new chplayer(videoObject3);
 			var videoObject4 = {
 				container: '#video4', //容器的ID或className
 				variable: 'player4',
 				autoplay: true, //是否自动播放
-				video: e[4]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player4 = new chplayer(videoObject4);
 			var videoObject5 = {
 				container: '#video5', //容器的ID或className
 				variable: 'player5',
 				autoplay: true, //是否自动播放
-				video: e[5]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player5 = new chplayer(videoObject5);
-		} else if(len == 7) {
+		}else if(len == 7) {
 			var videoObject = {
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 			var videoObject1 = {
 				container: '#video1', //容器的ID或className
 				variable: 'player1',
 				autoplay: true, //是否自动播放
-				video: e[1]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player1 = new chplayer(videoObject1);
 			var videoObject2 = {
 				container: '#video2', //容器的ID或className
 				variable: 'player2',
 				autoplay: true, //是否自动播放
-				video: e[2]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player2 = new chplayer(videoObject2);
 			var videoObject3 = {
 				container: '#video3', //容器的ID或className
 				variable: 'player3',
 				autoplay: true, //是否自动播放
-				video: e[3]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player3 = new chplayer(videoObject3);
 			var videoObject4 = {
 				container: '#video4', //容器的ID或className
 				variable: 'player4',
 				autoplay: true, //是否自动播放
-				video: e[4]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player4 = new chplayer(videoObject4);
 			var videoObject5 = {
 				container: '#video5', //容器的ID或className
 				variable: 'player5',
 				autoplay: true, //是否自动播放
-				video: e[5]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player5 = new chplayer(videoObject5);
 			var videoObject6 = {
 				container: '#video6', //容器的ID或className
 				variable: 'player6',
 				autoplay: true, //是否自动播放
-				video: e[6]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player6 = new chplayer(videoObject6);
-		} else if(len == 8) {
+		}else if(len == 8) {
 			var videoObject = {
 				container: '#video0', //容器的ID或className
 				variable: 'player',
 				autoplay: true, //是否自动播放
-				video: e[0]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player = new chplayer(videoObject);
 			var videoObject1 = {
 				container: '#video1', //容器的ID或className
 				variable: 'player1',
 				autoplay: true, //是否自动播放
-				video: e[1]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player1 = new chplayer(videoObject1);
 			var videoObject2 = {
 				container: '#video2', //容器的ID或className
 				variable: 'player2',
 				autoplay: true, //是否自动播放
-				video: e[2]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player2 = new chplayer(videoObject2);
 			var videoObject3 = {
 				container: '#video3', //容器的ID或className
 				variable: 'player3',
 				autoplay: true, //是否自动播放
-				video: e[3]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player3 = new chplayer(videoObject3);
 			var videoObject4 = {
 				container: '#video4', //容器的ID或className
 				variable: 'player4',
 				autoplay: true, //是否自动播放
-				video: e[4]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player4 = new chplayer(videoObject4);
 			var videoObject5 = {
 				container: '#video5', //容器的ID或className
 				variable: 'player5',
 				autoplay: true, //是否自动播放
-				video: e[5]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player5 = new chplayer(videoObject5);
 			var videoObject6 = {
 				container: '#video6', //容器的ID或className
 				variable: 'player6',
 				autoplay: true, //是否自动播放
-				video: e[6]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player6 = new chplayer(videoObject6);
 			var videoObject7 = {
 				container: '#video7', //容器的ID或className
 				variable: 'player7',
 				autoplay: true, //是否自动播放
-				video: e[7]
+				video: 'http://hls.open.ys7.com/openlive/751ea834bf66421a8b8c83f2af6389ef.m3u8'
 			};
 			var player7 = new chplayer(videoObject7);
-		}					
 		}
 	</script>
 

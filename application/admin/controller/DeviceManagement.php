@@ -326,7 +326,6 @@ class DeviceManagement extends BaseController
     {
         $device_id = input('post.device_id/s','');
         Device::destroy($device_id);
-        DeviceRegisterAlias::where('device_id',$device_id)->delete();
         Passageway::where('device_id',$device_id)->delete();
         return $this->success('删除成功');
     }
@@ -361,6 +360,9 @@ class DeviceManagement extends BaseController
     {
         $passageways = input('post.passageways/a',[]);
 
+//        $model = new Passageway();
+//        $res = $model->save($passageways);
+
         $addData = [];
         $addData['device_id'] = $passageways[0]['device_id'];
         $addData['a'] = $passageways[0]['a'];
@@ -370,27 +372,20 @@ class DeviceManagement extends BaseController
         foreach ($passageways as $value)
         {
             $model = new Passageway();
-            $value['start_coding'] = '00'.$value['y'].$value['x'];
-            unset($value['x']);
-            unset($value['y']);
-            $model->allowField(true)->save($value);
+            $model->save($value);
             $cate_id = $value['category_id'];
             $cate = PassagewayCategory::get($cate_id);
             $type = $cate['type'];
             $data[] = [
                 'id' => $model->id,
-                'starting_address' => $value['start_coding'],
-                'mark' => $value['mark'],
-                'switch_id' => $value['switch_id']
+                'starting_address' => $value['start_coding']
             ];
         }
 
         array_multisort(array_column($data,'id'),SORT_ASC,$data);
 
         $addData['passageway_id'] = implode(',',array_column($data,'id'));
-        $addData['switch_id'] = implode(',',array_column($data,'switch_id'));
         $addData['starting_address'] = $data[0]['starting_address'];
-        $addData['mark'] = $data[0]['mark'];
         $count = count($passageways);
         $b = dechex($count);
         $c = strlen($b);
@@ -402,7 +397,6 @@ class DeviceManagement extends BaseController
         $d.=$b;
         $addData['register_number'] = $d;
         $addData['type'] = $type;
-
         $modelB = new DeviceRegisterAlias();
         $modelB->save($addData);
 
@@ -447,15 +441,14 @@ class DeviceManagement extends BaseController
 
     public function deletePass()
     {
-        $mark = input('post.mark/s','');
-
-        $modelA = new Passageway();
-        $modelA->where('mark',$mark)->delete();
-        $modelB = new DeviceRegisterAlias();
-        $modelB->where('mark',$mark)->delete();
-
-        //TODO::处理 device_register_alias表
-        return $this->success('删除成功');
+        $id = input('post.id/d',0);
+        $res = Passageway::destroy($id);
+        if ($res)
+        {
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
+        }
     }
 
     /**
@@ -480,7 +473,7 @@ class DeviceManagement extends BaseController
         $model = new PassagewayCategory();
         $model->name = $name;
         $model->type = $type;
-        $model->data_address = '00'.$data_address;
+        $model->data_address = $data_address;
         $res = $model->save();
         if ($res)
         {

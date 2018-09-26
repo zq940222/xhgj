@@ -20,9 +20,4 @@ class Passageway extends BaseModel
     {
         return $this->belongsTo('PassagewayCategory','category_id','id');
     }
-
-    public function getCountTimeAttr()
-    {
-        return 60;
-    }
 }

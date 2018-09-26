@@ -89,6 +89,8 @@
 			/*分页*/
 			
 			.page {
+				position: absolute;
+				bottom: 9px;
 				text-align: center;
 			}
 			
@@ -436,7 +438,7 @@
 			<table class="layui-table table_common">
 				<thead>
 					<tr>
-						<th>单元标识符</th>
+						<th>通道编号</th>
 						<th>通道名称</th>
 						<th>通道类型</th>
 						<th>显示计算</th>
@@ -581,11 +583,11 @@
 										var _html = '';
 										for(var i = 0; i < _data.length; i++) {
 											_html += '<tr>' +
-												'<td>' + _data[i].mark + '</td>' +
+												'<td>' + _data[i].id + '</td>' +
 												'<td>' + _data[i].name + '</td>' +
 												'<td>' + _data[i].category.name + '</td>' +
 												'<td>y=' + _data[i].a + 'x+' + _data[i].b + '</td>' +
-												'<td class="buttomname" dataid =' + _data[i].id + ' datastate = ' + _data[i].category.type + ' datamark = '+_data[i].mark+'>' +
+												'<td class="buttomname" dataid =' + _data[i].id + ' datastate = ' + _data[i].category.type + '>' +
 												'<span class="exl">修改</span>' +
 												'<span class="limit_set">限值设置</span>' +
 												'<span class="rem" style="color: #FF4E48;">删除</span>' +
@@ -739,7 +741,7 @@
 		});
 		//删除
 		$('body').on('click', '.rem', function() {
-			var td_id = $(this).parents('.buttomname').attr('datamark');
+			var td_id = $(this).parents('.buttomname').attr('dataid');
 			console.log(td_id);
 			layer.open({
 				content: '是否删除该通道',
@@ -751,7 +753,7 @@
 						url: _http + "/admin/device_management/deletePass",
 						dataType: 'json',
 						data: {
-							mark: td_id,
+							id: td_id,
 						},
 						success: function(data) {
 							//console.log(data);

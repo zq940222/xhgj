@@ -41,7 +41,6 @@ class DataManagement extends BaseController
         $model->title = $title;
         $model->category_id = $category_id;
         $model->content = $content;
-        $model->create_time = time();
         $res = $model->save();
         if ($res)
         {

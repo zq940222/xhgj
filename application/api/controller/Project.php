@@ -146,6 +146,13 @@ class Project  extends Base
             ->select();
         return $this->success('请求成功','',$data);
     }
+    //视频url
+    public function video(){
+        $uid=\app\api\service\Token::getCurrentUid();
+        $did=Request::instance()->get('device_id',0);//站点id
+         $data=Device::where('device_id',$did)->field('video_url')->find();
+         return $this->success('请求成功','',$data);
+    }
     //站点基本信息
     public function unit(){
         $uid=\app\api\service\Token::getCurrentUid();

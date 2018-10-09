@@ -137,7 +137,7 @@ class Project  extends Base
     //日志
     public function log(){
         $uid=\app\api\service\Token::getCurrentUid();
-        $did=Request::instance()->get('device_id',0);//站点id
+        $did=Request::instance()->get('device_id');//站点id
         $data=DeviceLog::join('project_admin','project_admin.id=device_log.project_id')
             ->where('device_log.project_id',$uid)
             ->where('device_log.device_id',$did)

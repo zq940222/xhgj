@@ -203,10 +203,14 @@ class Account extends Base
             ->where('p.project_admin_id',$xid)
             ->field('p.*')
             ->select();
-        for($i=0;$i<count($list);$i++){
-            $pro=Project_admin_device::where('id',$list[$i]['id'])
+            if($list){
+             for($i=0;$i<count($list);$i++){
+                $pro=Project_admin_device::where('id',$list[$i]['id'])
                 ->delete();
-        }
+             }
+            }else{
+               $pro=1; 
+            }
         if($pro){
             $dev=explode(',',$device_id);
             for($i=0;$i<count($dev);$i++){

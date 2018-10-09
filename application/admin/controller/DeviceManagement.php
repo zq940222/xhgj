@@ -10,6 +10,7 @@ namespace app\admin\controller;
 
 
 use app\admin\model\Device;
+use app\admin\model\DeviceCorrelation;
 use app\admin\model\DeviceRegisterAlias;
 use app\admin\model\Passageway;
 use app\admin\model\PassagewayCategory;
@@ -371,6 +372,7 @@ class DeviceManagement extends BaseController
         $data = [];
         foreach ($passageways as $value)
         {
+            $value['start_coding'] = $value['y'].$value['x'];
             $model = new Passageway();
             $model->save($value);
             $cate_id = $value['category_id'];
@@ -441,8 +443,8 @@ class DeviceManagement extends BaseController
 
     public function deletePass()
     {
-        $id = input('post.id/d',0);
-        $res = Passageway::destroy($id);
+        $mark = input('post.mark/s','');
+        $res = Passageway::where('mark',$mark)->delete();
         if ($res)
         {
             return $this->success('删除成功');
@@ -611,5 +613,44 @@ class DeviceManagement extends BaseController
         $url = $res['video_url'];
         $url = explode(',',$url);
         return ['url'=>$url];
+    }
+
+    public function deviceByProject($device_id)
+    {
+        $model = Device::get($device_id);
+        $res = Device::where('project_id',$model->project_id)->select();
+        return $res;
+    }
+
+    public function relationDevice($device_id1,$device_id2)
+    {
+        $where = [];
+        $where['device_id1|device_id2'] = ['=',$device_id1];
+        $where['device_id1|device_id2'] = ['=',$device_id2];
+        DeviceCorrelation::where($where)
+            ->delete();
+        $model1 = Device::get($device_id1);
+        $model2 = Device::get($device_id2);
+        $res = DeviceCorrelation::create([
+            'device_id1' => $device_id1,
+            'device_id2' => $device_id2,
+            'lon1' => $model1->longitude,
+            'lat1' => $model1->latitude,
+            'lon2' => $model2->longitude,
+            'lat2' => $model2->latitude,
+            'project_id' => $model1->project_id
+        ]);
+        if ($res)
+        {
+            return $this->success('设置成功');
+        }else{
+            return $this->error('设置失败');
+        }
+    }
+
+    public function getRelationDevice($project_id)
+    {
+        $res = DeviceCorrelation::where('project_id',$project_id)->column(['lon1','lat1','lon2','lat2']);
+        return $res;
     }
 }

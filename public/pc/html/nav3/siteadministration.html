@@ -84,12 +84,11 @@
 			tbody tr td span {
 				display: inline-block;
 				width: 100%;
+				text-align: left;
 			}
 			/*分页*/
 			
 			.page {
-				position: absolute;
-				bottom: 9px;
 				text-align: center;
 			}
 			
@@ -328,6 +327,9 @@
 			<li class="layui-nav-item  layui-this">
 				<a href="siteadministration.html">站点管理</a>
 			</li>
+			<li class="layui-nav-item">
+				<a href="Well.html">井盖管理</a>
+			</li>
 		</ul>
 		<!-- 筛选 -->
 		<div class="layui-card layui-card_shaixuan">
@@ -346,9 +348,9 @@
 					<tr>
 						<th>站点编号</th>
 						<th>站点名称</th>
-						<th>所在省份</th>
+						<th style="width: 100px;">所在省份</th>
 						<th>所属项目</th>
-						<th>站点基本信息</th>
+						<th style="width: 300px;">站点基本信息</th>
 						<th>管理人员信息</th>
 						<th>操作</th>
 					</tr>

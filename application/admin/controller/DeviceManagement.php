@@ -17,6 +17,9 @@ use app\admin\model\PassagewayCategory;
 use app\admin\model\PassagewayStartAddress;
 use app\admin\model\Projects;
 use app\admin\model\ReadDevice;
+use app\admin\model\Sensor;
+use app\admin\model\SwitchList;
+use app\admin\model\Well;
 use think\Db;
 
 class DeviceManagement extends BaseController
@@ -56,6 +59,7 @@ class DeviceManagement extends BaseController
         $res = Projects::create([
             'project_name' => $projectName,
             'build_start_time' => time(),
+            'maintain_last_time' => time(),
             'project_explain' => $projectExplain,
             'logo' => $projectLogo,
             'longitude' => $longitude,
@@ -209,6 +213,7 @@ class DeviceManagement extends BaseController
         $model->latitude = $latitude;
         $model->video_url = $video_url;
         $model->is_old = $is_old;
+        $model->install_last_time = time();
         $res = $model->save();
 
         $readDeviceModel = new ReadDevice();
@@ -372,7 +377,7 @@ class DeviceManagement extends BaseController
         $data = [];
         foreach ($passageways as $value)
         {
-            $value['start_coding'] = $value['y'].$value['x'];
+            $value['start_coding'] = '00'.$value['y'].$value['x'];
             $model = new Passageway();
             $model->save($value);
             $cate_id = $value['category_id'];
@@ -399,6 +404,7 @@ class DeviceManagement extends BaseController
         $d.=$b;
         $addData['register_number'] = $d;
         $addData['type'] = $type;
+        $addData['mark'] = $passageways[0]['mark'];
         $modelB = new DeviceRegisterAlias();
         $modelB->save($addData);
 
@@ -445,6 +451,7 @@ class DeviceManagement extends BaseController
     {
         $mark = input('post.mark/s','');
         $res = Passageway::where('mark',$mark)->delete();
+        DeviceRegisterAlias::where('mark',$mark)->delete();
         if ($res)
         {
             return $this->success('删除成功');
@@ -650,7 +657,165 @@ class DeviceManagement extends BaseController
 
     public function getRelationDevice($project_id)
     {
-        $res = DeviceCorrelation::where('project_id',$project_id)->column(['lon1','lat1','lon2','lat2']);
-        return $res;
+        $res = DeviceCorrelation::where('project_id',$project_id)->select();
+        $data = [];
+        foreach ($res as $value)
+        {
+            $data[] = [
+                [
+                    'lng' => $value['lon1'],
+                    'lat' => $value['lat1']
+                ],
+                [
+                    'lng' => $value['lon2'],
+                    'lat' => $value['lat2']
+                ]
+            ];
+        }
+        return $data;
+    }
+
+    /**
+     * @throws \think\exception\DbException
+     * @desc 开关控制
+     */
+    public function switchSetting()
+    {
+
+        $device_id = input('post.device_id/s','');
+        $name = input('post.name/s','');
+        $status = input('post.status/d',0);
+        $mark = input('post.mark/s','');
+        $code = input('post.code/s','');
+        $address_code = input('post.address_code/s','');
+        $value = input('post.value/s','');
+
+
+        $model = new SwitchList();
+
+        $model->device_id = $device_id;
+        $model->name = $name;
+        $model->mark = $mark;
+        $model->code = $code;
+        $model->address_code = $address_code;
+        $model->value = $value;
+        $model->status = $status;
+        $res = $model->save();
+
+
+        if ($res)
+        {
+            return $this->success('设置成功');
+        }else{
+            return $this->error('设置失败');
+        }
+    }
+
+    public function switchList($device_id)
+    {
+        $model = new SwitchList();
+        $data = $model->where('device_id',$device_id)->select();
+        return $data;
+    }
+
+
+    public function deleteSwitch($id)
+    {
+        $model = new SwitchList();
+        $res = $model->where('id',$id)->delete();
+        if ($res)
+        {
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    public function addWell()
+    {
+        $project_id = input('post.project_id/s','');
+        $name = input('post.name/s','');
+        $lng = input('post.lng/s','');
+        $lat = input('post.lat/s','');
+        $fangwei = input('post.fangwei/s','');
+        $linkman = input('post.linkman/s','');
+        $department = input('post.department/s','');
+        $email = input('post.email/s','');
+        $phone = input('post.phone/s','');
+
+        $model = new Well();
+        $model->project_id = $project_id;
+        $model->name = $name;
+        $model->lng = $lng;
+        $model->lat = $lat;
+        $model->fangwei = $fangwei;
+        $model->linkman = $linkman;
+        $model->department = $department;
+        $model->email = $email;
+        $model->phone = $phone;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('添加成功');
+        }else{
+            return $this->error('添加失败');
+        }
+    }
+
+
+    public function wellList()
+    {
+        $model = new Well();
+        $data = $model->relation(['project'])->select();
+        return $data;
+    }
+
+    public function deletewell($id)
+    {
+        $model = new Well();
+        $res = $model->where('id',$id)->delete();
+        if ($res)
+        {
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    public function addSensor()
+    {
+        $well_id = input('post.well_id/d',0);
+        $name = input('post.name/s','');
+        $device_id = input('post.device_id/s','');
+
+        $model = new Sensor();
+        $model->well_id = $well_id;
+        $model->name = $name;
+        $model->device_id = $device_id;
+        $res = $model->save();
+        if ($res)
+        {
+            return $this->success('添加成功');
+        }else{
+            return $this->error('添加失败');
+        }
+    }
+
+    public function sensorList($well_id)
+    {
+        $data = Sensor::where('well_id',$well_id)->select();
+        return $data;
+    }
+
+    public function deletesensor($id)
+    {
+        $model = new Sensor();
+        $res = $model->where('id',$id)->delete();
+        if ($res)
+        {
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
+        }
     }
 }

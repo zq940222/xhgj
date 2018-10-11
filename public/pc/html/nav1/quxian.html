@@ -184,6 +184,7 @@
 	<script type="text/javascript">
 		//项目曲线id
 		var dra_id = store.get('dra_id');
+		var b_name;//名称
 		//默认时间
 		var time = '';
 		//时间选择
@@ -197,7 +198,7 @@
 				done: function(value, date) { //监听日期被切换
 					console.log(value);
 					time = value;
-					quxian();
+					quxian(b_name);
 				}
 			});
 		});
@@ -214,6 +215,8 @@
 				//console.log(data);
 				$('.headerzd').text(data.data.device.device_name);
 				$('.navtd').text(data.data.name);
+				b_name = data.data.name;
+				quxian(b_name);
 				var passagewaySingle = new Vue({
 					el: '#passagewaySingle',
 					data: {
@@ -241,7 +244,7 @@
 			}
 		});
 		//曲线统计
-		function quxian() {
+		function quxian(b_name) {
 			$.ajax({
 				type: "GET",
 				url: _http + "/admin/system_overview/historyCurve",
@@ -251,7 +254,8 @@
 					time: time
 				},
 				success: function(data) {
-					//console.log(data);
+					console.log(data);
+					
 					//统计图A
 					// 基于准备好的dom，初始化echarts实例
 					var myChart = echarts.init(document.getElementById('mainA'));
@@ -279,7 +283,7 @@
 							}
 						},
 						series: [{
-							name: '温度',
+							name: b_name,
 							type: 'line',
 							stack: '总量',
 							smooth: true,
@@ -307,7 +311,7 @@
 				}
 			});
 		}
-		quxian();
+		
 	</script>
 
 </html>

@@ -82,7 +82,7 @@
 			}
 			
 			.layui-tab-title li {
-				width: 49.5%;
+				width: 33.2%;
 				padding: 0;
 				line-height: 50px;
 			}
@@ -112,12 +112,15 @@
 				line-height: 50px;
 				cursor: pointer;
 			}
-			.layui-yichang div{
+			
+			.layui-yichang div {
 				color: #FF4E48;
 			}
-			.layui-shop div{
-				color:#FFD33D;
+			
+			.layui-shop div {
+				color: #FFD33D;
 			}
+			
 			.layui-tab-content {
 				padding: 0;
 			}
@@ -160,9 +163,19 @@
 			.layui-nav-time span {
 				color: #fff;
 			}
-			.nav_content{
+			
+			.nav_content {
 				height: 600px;
 				overflow-y: scroll;
+			}
+			
+			@media only screen and (max-width: 1600px) {
+				.content_map {
+					width: 55%;
+				}
+				.content_tit {
+					width: 45%;
+				}
 			}
 		</style>
 	</head>
@@ -184,8 +197,10 @@
 				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
 					<ul class="layui-tab-title">
 						<li class="layui-this">站点列表 </li>
+						<li>井盖列表</li>
 						<li>报警列表</li>
 					</ul>
+					<!--站点-->
 					<div class="layui-tab-content">
 						<div class="layui-tab-item layui-show">
 							<div class="layui-row" style="background-color: #F8F8F8;">
@@ -208,9 +223,35 @@
 									<div class="layui-col-md3" v-text="val.device_id"></div>
 									<div class="layui-col-md3" v-text="intime(val.install_last_time)"></div>
 									<div class="layui-col-md3" v-text="val.maintain_last_worker"></div>
-								</div>								
+								</div>
 							</div>
 						</div>
+						<!--井盖-->
+						<div class="layui-tab-item">
+							<div class="layui-row" style="background-color: #F8F8F8;">
+								<div class="layui-col-md3">
+									名称
+								</div>
+								<div class="layui-col-md3">
+									方位
+								</div>
+								<div class="layui-col-md3">
+									联系人
+								</div>
+								<div class="layui-col-md3">
+									电话
+								</div>
+							</div>
+							<div class="nav_content" id="wellList">
+								<div class="layui-row" v-for="val in wellList">
+									<div class="layui-col-md3" v-text="val.name"></div>
+									<div class="layui-col-md3" v-text="val.fangwei"></div>
+									<div class="layui-col-md3" v-text="val.linkman"></div>
+									<div class="layui-col-md3" v-text="val.phone"></div>
+								</div>
+							</div>
+						</div>
+						<!--报警列表-->
 						<div class="layui-tab-item">
 							<div class="layui-row" style="background-color: #F8F8F8;">
 								<div class="layui-col-md4">
@@ -257,8 +298,8 @@
 			type: "GET",
 			url: _http + "/admin/system_overview/projectSingle",
 			dataType: 'json',
-			data:{
-				project_id:project_id
+			data: {
+				project_id: project_id
 			},
 			success: function(data) {
 				var _header = new Vue({
@@ -266,9 +307,9 @@
 					data: {
 						thisheader: data.data
 					},
-					methods:{
-						intime:function(_time){
-						  return new Date(parseInt(_time) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ')
+					methods: {
+						intime: function(_time) {
+							return new Date(parseInt(_time) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ')
 						}
 					}
 				});
@@ -279,8 +320,8 @@
 			type: "GET",
 			url: _http + "/admin/system_overview/siteList",
 			dataType: 'json',
-			data:{
-				project_id:project_id
+			data: {
+				project_id: project_id
 			},
 			success: function(data) {
 				//站点总数
@@ -296,16 +337,16 @@
 								return 'layui-row';
 							} else if(e === 1) {
 								return 'layui-row layui-yichang';
-							} else{
+							} else {
 								return 'layui-row layui-shop';
 							}
 						},
-						idclick:function(id){
-							store.set('device_id',id);
-							window.location.href='station.html';
+						idclick: function(id) {
+							store.set('device_id', id);
+							window.location.href = 'station.html';
 						},
-						intime:function(_time){
-						  return new Date(parseInt(_time) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ')
+						intime: function(_time) {
+							return new Date(parseInt(_time) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ')
 						}
 					}
 				});
@@ -326,15 +367,37 @@
 				xianmap(json_data);
 			}
 		});
+        //井盖列表
+		$.ajax({
+			type: "GET",
+			url: _http + "/admin/device_management/wellList",
+			dataType: 'json',
+			data: {
+				project_id: project_id
+			},
+			success: function(data) {
+				console.log(data);
+				var content = new Vue({
+					el: '#wellList',
+					data: {
+						wellList: data
+					},
+					methods: {
+						
+					}
+				});
+			}
+		});
 		//报警列表
 		$.ajax({
 			type: "GET",
 			url: _http + "/admin/system_overview/siteAlarmList",
 			dataType: 'json',
-			data:{
-				project_id:project_id
+			data: {
+				project_id: project_id
 			},
 			success: function(data) {
+				//console.log(data);
 				var content = new Vue({
 					el: '#contenttwo',
 					data: {
@@ -344,18 +407,18 @@
 						classnowes: function(e) {
 							if(e === 1) {
 								return 'layui-row layui-yichang';
-							} else{
+							} else {
 								return 'layui-row layui-shop';
 							}
 						},
-						idclick:function(id){
-							store.set('device_id',id);
-							window.location.href='station.html';
+						idclick: function(id) {
+							store.set('device_id', id);
+							window.location.href = 'station.html';
 						},
-						thiscontent:function(_id){
-							if (_id===1) {
+						thiscontent: function(_id) {
+							if(_id === 1) {
 								return '数据异常'
-							} else{
+							} else {
 								return '通讯失败'
 							}
 						}
@@ -371,28 +434,51 @@
 				var marker = new BMap.Point(json_data[i][0], json_data[i][1]); // 创建点			
 				marxian.push(marker);
 				var maptext = json_data[i][2]; //内容
-				var status = json_data[i][3];//状态
-				var con_id = json_data[i][4];//项目id
-				addMarker(marker, maptext, status,con_id);
-			}
-			//链接路线
-			var polyline = new BMap.Polyline(marxian, {
-				strokeColor: "#262626",
-				strokeWeight: 2,
-				strokeOpacity: 0.5
-			}); //创建折线
-			map.addOverlay(polyline); //增加折线
+				var status = json_data[i][3]; //状态
+				var con_id = json_data[i][4]; //项目id
+				addMarker(marker, maptext, status, con_id);
+			};
+
+			//数据对接
+			$.ajax({
+				type: "POST",
+				url: _http + "/admin/device_management/getRelationDevice",
+				dataType: 'json',
+				data: {
+					project_id: project_id
+				},
+				success: function(data) {
+					var xianobj=data;
+					//添加选择点线状态		
+					for(var x = 0; x < xianobj.length; x++) {
+						var xiandianobj = [];
+						for(var s = 0; s < xianobj[x].length; s++) {
+							var xiandian = new BMap.Point(xianobj[x][s].lng, xianobj[x][s].lat); // 创建点	
+							xiandianobj.push(xiandian);
+							//循环创建路线
+							//链接路线
+							var polyline = new BMap.Polyline(xiandianobj, {
+								strokeColor: "#00a0ea",
+								strokeWeight: 2,
+								strokeOpacity: 1
+							}); //创建折线
+							map.addOverlay(polyline); //增加折线
+						}
+					}
+				}
+			});
+
 			//绘制点位
 			// 编写自定义函数,创建标注
-			function addMarker(pointes, maptext, status,con_id) {
+			function addMarker(pointes, maptext, status, con_id) {
 				//新图标
 				if(status == 0) {
 					//正常
 					var myIcon = new BMap.Icon("../../images/icon_zhengchang.png", new BMap.Size(30, 30));
-				} else if(status == 1){
+				} else if(status == 1) {
 					//异常
 					var myIcon = new BMap.Icon("../../images/icon_xingnengguz.png", new BMap.Size(30, 30));
-				}else if(status == 2){
+				} else if(status == 2) {
 					//失败
 					var myIcon = new BMap.Icon("../../images/icon_gongnengguz.png", new BMap.Size(30, 30));
 				};
@@ -427,12 +513,11 @@
 				});
 				//点击事件
 				marker123.addEventListener("click", function(e) {
-					store.set('device_id',con_id);
-					window.location.href='station.html';
+					store.set('device_id', con_id);
+					window.location.href = 'station.html';
 				});
 			};
 		};
-
 	</script>
 
 </html>

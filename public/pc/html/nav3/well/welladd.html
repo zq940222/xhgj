@@ -4,13 +4,13 @@
 	<head>
 		<!-- <meta charset="utf-8|GB2312"> -->
 		<meta charset="UTF-8">
-		<title>通道设置</title>
+		<title>井盖添加</title>
 		<meta name="renderer" content="webkit|ie-comp|ie-stand">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
-		<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon" />
-		<link rel="stylesheet" href="../../css/font.css">
-		<link rel="stylesheet" href="../../css/xadmin.css">
+		<link rel="shortcut icon" href="../../../favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../../css/font.css">
+		<link rel="stylesheet" href="../../../css/xadmin.css">
 		<style>
 			body {
 				height: 100%;
@@ -430,24 +430,22 @@
 		<!--导航-->
 		<ul class="layui-nav" lay-filter="">
 			<li class="layui-nav-item">
-				<a href="siteadministration.html" class="devicename"></a>
+				<a href="../Well.html" class="devicename">井盖管理</a>
 			</li>
 			<span class="set_arrow">>></span>
 			<li class="layui-nav-item  layui-this">
-				<a href="">通道设置</a>
+				<a href="#">井盖通道</a>
 			</li>
 		</ul>
 		<!-- 选择类型 -->
 		<div class="way_set_top">
 			<div class="layui-card_shaixuan">
 				<div class="layui-input-block layui-input-block_input">
-					<h3 class="way_set_site_name"></h3>
+					<h3 class="way_set_site_name">井盖管理</h3>
 				</div>
 				<div class="layui-input-block layui-input-block_addproject">
 					<a class="buttonstyle">刷新</a>
-					<button class="layui-btn layui-btn_add_zdexl" lay-submit lay-filter="*">站点关联设置</button>
-					<button class="layui-btn layui-btn_add_Switch" lay-submit lay-filter="*">开关控制</button>
-					<button class="layui-btn layui-btn_add_project" lay-submit lay-filter="*">新增通道</button>
+					<button class="layui-btn layui-btn_add_Switch" lay-submit lay-filter="*">井盖添加</button>
 				</div>
 			</div>
 		</div>
@@ -457,10 +455,8 @@
 			<table class="layui-table table_common">
 				<thead>
 					<tr>
-						<th>单元标识符</th>
 						<th>通道名称</th>
-						<th>通道类型</th>
-						<th>显示计算</th>
+						<th>产品编号</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -478,90 +474,25 @@
 				</div>
 			</div>
 		</div>
-		<div id="model">
-			<form method="post" class="layui-form">
-				<div class="model_content">
-					<div class="model_upload_decribe">
-						请为A7BF812通道设置数据及变率限值, 达到限值报警<br> 可单独设置上限或者下限, 或者设置一个区间
-					</div>
-					<div class="use_flex">
-						<input type="text" name="min_range" required lay-verify="required" placeholder="数据上限" autocomplete="off" class="data_limit_input">
-						<span class="limit_reduce_symbol"></span>
-						<input type="text" name="max_range" required lay-verify="required" placeholder="数据下限" autocomplete="off" class="data_limit_input">
-					</div>
-					<div class="use_flex">
-						<input type="text" name="change_range_min" required lay-verify="required" placeholder="数据变率上限" autocomplete="off" class="data_limit_input">
-						<span class="limit_reduce_symbol"></span>
-						<input type="text" name="change_range_max" required lay-verify="required" placeholder="数据变率下限" autocomplete="off" class="data_limit_input">
-					</div>
-					<div class="use_flex">
-						<input type="text" name="alarm_limit_min" required lay-verify="required" placeholder="通道关联报警限值上限" autocomplete="off" class="data_limit_input">
-						<span class="limit_reduce_symbol"></span>
-						<input type="text" name="alarm_limit_max" required lay-verify="required" placeholder="通道关联报警限值下限" autocomplete="off" class="data_limit_input">
-					</div>
-					<!--多选择框-->
-					<div class="way_limit_set_height">
-						<div class="layui-input-block way_limit_set_choices layui-form" lay-filter="ways">
-							<select name="getPassagewayList" lay-filter="rep1" class="way_limit_set_select getPassagewayList">
-								<!--通道内容-->
-							</select>
-						</div>
-						<ul class="add_way" lay-verify="required">
-							<!-- <li>温度通道D  X</li> -->
-						</ul>
-					</div>
-					<div class="use_flex">
-						<input type="text" name="a" required lay-verify="required" placeholder="a" autocomplete="off" class="data_limit_input">
-						<span class="limit_reduce_symbol"></span>
-						<input type="text" name="b" required lay-verify="required" placeholder="b" autocomplete="off" class="data_limit_input">
-					</div>
-					<div class="use_flex">
-						<input type="text" name="mark" required lay-verify="required" placeholder="单元标识符" autocomplete="off" class="data_limit_input">
-						<input type="text" name="code" required lay-verify="required" placeholder="功能码" autocomplete="off" class="data_limit_input">
-					</div>
-					<div class="use_flex">
-						<input type="text" name="address_code" required lay-verify="required" placeholder="地址码" autocomplete="off" class="data_limit_input">
-						<input type="text" name="value" required lay-verify="required" placeholder="数值" autocomplete="off" class="data_limit_input">
-					</div>
-				</div>
-			</form>
-		</div>
-		<!--开关量-->
-		<div id="modelk">
+        <!-- 开关控制 -->
+		<div id="modelkg">
 			<form method="post" class="layui-form">
 				<div class="model_content">
 					<div class="use_flex">
-						<input type="text" name="mark1" required lay-verify="required" placeholder="单元标识符" autocomplete="off" class="data_limit_input">
-						<input type="text" name="code1" required lay-verify="required" placeholder="功能码" autocomplete="off" class="data_limit_input">
-					</div>
-					<div class="use_flex">
-						<input type="text" name="address_code1" required lay-verify="required" placeholder="地址码" autocomplete="off" class="data_limit_input">
-						<input type="text" name="value1" required lay-verify="required" placeholder="数值" autocomplete="off" class="data_limit_input">
+						<input type="text" name="name" required lay-verify="required" placeholder="通道名称" autocomplete="off" class="data_limit_input">
+						<input type="text" name="code" required lay-verify="required" placeholder="产品编号" autocomplete="off" class="data_limit_input">
 					</div>
 				</div>
-			</form>
-		</div>
-		<div id="modelzd">
-			<!--站点关联设置-->
-			<form method="post" class="layui-form">
-				<div class="model_content_box">
-					<div class="layui-card model_layui-card" style="margin-top: 40px;">
-						<!--选择框-->
-						<div class="layui-input-block layui-input-block_jingdu">
-							<select name="glzdsz" id="bjval" lay-verify="required" class="glzdexl"></select>
-						</div>
-					</div>
-				</div>
-			</form>
+			</form>	
 		</div>
 	</body>
-	<script type="text/javascript" src="../../js/jquery.min.js" charset="utf-8"></script>
-	<script type="text/javascript" src="../../js/xadmin.js" charset="utf-8"></script>
-	<script type="text/javascript" src="../../lib/layui/layui.js" charset="utf-8"></script>
-	<script src="../../js/store.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/http.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="../../../js/jquery.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="../../../js/xadmin.js" charset="utf-8"></script>
+	<script type="text/javascript" src="../../../lib/layui/layui.js" charset="utf-8"></script>
+	<script src="../../../js/store.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../../js/http.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		var device_id = store.get('device_id');
+		var device_well = store.get('device_well');
 		var glid;//关联通道id
 		//刷新页面
 		$('.buttonstyle').on('click', function() {
@@ -573,23 +504,20 @@
 			//console.log(JSON.stringify(e));
 			$.ajax({
 				type: "GET",
-				url: _http + "/admin/device_management/passList",
+				url: _http + "/admin/device_management/sensorList",
 				dataType: 'json',
 				data: {
-					page: 1,
-					size: 5,
-					device_id: device_id
+					well_id:device_well
 				},
 				success: function(data) {
-					$('.devicename,.way_set_site_name').html(data.data.device_name);
 					layui.use('laypage', function() {
 						var laypage = layui.laypage;
 						//console.log(data.data.total);
-						count = data.data.total;
+//						count = data.data.total;
 						//执行一个laypage实例
 						laypage.render({
 							elem: 'pageid',
-							count: count, //数据总数，从服务端得到
+							count: 1, //数据总数，从服务端得到
 							limit: 5,
 							prev: '<上一页',
 							next: '下一页>',
@@ -601,27 +529,21 @@
 								//console.log(obj.limit); //得到每页显示的条数	
 								$.ajax({
 									type: "GET",
-									url: _http + "/admin/device_management/passList",
+									url: _http + "/admin/device_management/sensorList",
 									dataType: 'json',
 									data: {
-										page: obj.curr,
-										size: obj.limit,
-										device_id: device_id
+										well_id:device_well
 									},
 									success: function(data) {
 										console.log(data);
 										$('#passList').find().remove(); //清楚数据
-										var _data = data.data.data;
+										var _data = data;
 										var _html = '';
 										for(var i = 0; i < _data.length; i++) {
 											_html += '<tr>' +
-												'<td>' + _data[i].mark + '</td>' +
 												'<td>' + _data[i].name + '</td>' +
-												'<td>' + _data[i].category.name + '</td>' +
-												'<td>y=' + _data[i].a + 'x+' + _data[i].b + '</td>' +
-												'<td class="buttomname" dataid =' + _data[i].id + ' datastate = ' + _data[i].category.type + ' datamark = '+_data[i].mark+'>' +
-												'<span class="exl">修改</span>' +
-												'<span class="limit_set">限值设置</span>' +
+												'<td>' + _data[i].device_id + '</td>' +
+												'<td class="buttomname" dataid =' + _data[i].id + '>' +
 												'<span class="rem" style="color: #FF4E48;">删除</span>' +
 												'</td>' +
 												'</tr>';
@@ -640,217 +562,58 @@
 			});
 		};
 		pagehtml();
-		//获取关联通道
-		function getCategoryxr() {
-			layui.use('form', function() {
-				var form = layui.form;
-				$.ajax({
-					type: "GET",
-					url: _http + "/admin/statistical_analysis/getPassagewayList",
-					dataType: 'json',
-					data:{
-						device_id:device_id
-					},
-					success: function(data) {
-						console.log(data);						
-						if(data == '') {
-							return false
-						};
-						glid = data.data[0].id;
-						var html = '';
-						for(var i = 0; i < data.data.length; i++) {
-							html += '<option value=' + data.data[i].id+'>' + data.data[i].name + '</option>';
-						};
-						$('.getPassagewayList').html(html);
-						form.render();
-					}
-				});
-			});
-		};
-		//获取关联站点
-		function getzdrxl() {
-			layui.use('form', function() {
-				var form = layui.form;
-				$.ajax({
-					type: "GET",
-					url: _http + "/admin/device_management/deviceByProject",
-					dataType: 'json',
-					data:{
-						device_id:device_id
-					},
-					success: function(data) {
-						console.log(data);						
-						if(data == '') {
-							return false
-						};
-						glid = data[0].id;
-						var html = '';
-						for(var i = 0; i < data.length; i++) {
-							html += '<option value=' + data[i].device_id+'>' + data[i].device_name + '</option>';
-						};
-						$('.glzdexl').html(html);
-						form.render();
-					}
-				});
-			});
-		};
-		//选择关联通道id
-		layui.use('form', function() {
-			var form = layui.form;
-			form.on('select(rep1)', function(_data) {
-				glid = _data.value;
-			});
-			//项目列表							
-		});
-		//限值设置提提交
+		//站点开关设置
 		layui.use('layer', function() {
 			var layer = layui.layer;
-			// 限值设置
-			//模拟量
-			$("#model").hide();
-			$("#modelk").hide();
-			$("#modelzd").hide();
-			$("#modelkg").hide();
-			$("body").on('click', '.limit_set', function() {
-				var pass_id = $(this).parents('.buttomname').attr('dataid');
-				if($(this).parent('.buttomname').attr('datastate') == '0') {
-					getCategoryxr();
-					$("#model").show();
-					layer.open({
-						type: 1,
-						title: '限值设置',
-						content: $('#model'),
-						area: ['500px', '576px'],
-						btn: ['确认设置'],
-						yes: function(index, layero) {
-							var objxz = new Object;
-							objxz.pass_id = pass_id;
-							objxz.min_range =$("input[name='min_range']").val();
-							objxz.max_range =$("input[name='max_range']").val();
-							objxz.change_range_min =$("input[name='change_range_min']").val();
-							objxz.change_range_max =$("input[name='change_range_max']").val();
-							objxz.alarm_limit_min =$("input[name='alarm_limit_min']").val();
-							objxz.alarm_limit_max =$("input[name='alarm_limit_max']").val();
-							objxz.passageways =glid;
-							objxz.a =$("input[name='a']").val();
-							objxz.b =$("input[name='b']").val();
-							objxz.mark =$("input[name='mark']").val();
-							objxz.code =$("input[name='code']").val();
-							objxz.address_code =$("input[name='address_code']").val();
-							objxz.value =$("input[name='value']").val();
-							$.ajax({
-								type: "POST",
-								url: _http + "/admin/device_management/limitSetting",
-								dataType: 'json',
-								data: objxz,
-								success: function(data) {
-									window.location.reload();
-								}
-							});
-						},
-						cancel: function() {
-							$("#model").hide();
-							window.location.reload();
-						}
-					});
-				} else {
-					$("#modelk").show();
-					layer.open({
-						type: 1,
-						title: '限值设置',
-						content: $('#modelk'),
-						area: ['500px', '230px'],
-						btn: ['确认设置'],
-						yes: function(index, layero) {
-							var objxz = new Object;
-							objxz.pass_id = pass_id;
-							objxz.mark =$("input[name='mark1']").val();
-							objxz.code =$("input[name='code1']").val();
-							objxz.address_code =$("input[name='address_code1']").val();
-							objxz.value =$("input[name='value1']").val();
-							$.ajax({
-								type: "POST",
-								url: _http + "/admin/device_management/limitSetting",
-								dataType: 'json',
-								data: objxz,
-								success: function(data) {
-									window.location.reload();
-								}
-							});
-						},
-						cancel: function() {
-							$("#modelk").hide();
-							window.location.reload();
-						}
-					});
-				}
-			});
-			
-			//站点关联设置
-			$('.layui-btn_add_zdexl').click(function() {
-				getzdrxl();
-				$("#modelzd").show();
+			$("#modelkg").hide();			
+			$('.layui-btn_add_Switch').click(function() {
+				$("#modelkg").show();
 				layer.open({
 					type: 1,
-					title: '站点关联设置',
-					content: $('#modelzd'),
-					area: ['500px', '230px'],
-					btn: ['确认设置'],
+					title: '井盖添加',
+					content: $('#modelkg'),
+					area: ['500px', '200px'],
+					btn: ['确认添加'],
 					yes: function(index, layero) {
-						var glzdid = $("select[name='glzdsz']").val();//相关联id
-						$.ajax({
-							type: "POST",
-							url: _http + "/admin/device_management/relationDevice",
-							dataType: 'json',
-							data: {
-								device_id1:glzdid,
-								device_id2:device_id
-							},
-							success: function(data) {
-								window.location.reload();
-							}
-						});
+						var name = $("input[name='name']").val();
+						var code = $("input[name='code']").val();
+						
+   						$.ajax({
+   							type: "POST",
+   							url: _http + "/admin/device_management/addSensor",
+   							dataType: 'json',
+   							data: {
+   								well_id:device_well,
+   								name:name,
+   								device_id:code
+   							},
+   							success: function(data) {
+   								window.location.reload();
+   							}
+   						});
 					},
 					cancel: function() {
-						$("#modelzd").hide();
+						$("#modelkg").hide();
 						window.location.reload();
 					}
 				});
 			});
-			
-			//站点开关设置
-			$('.layui-btn_add_Switch').click(function() {
-				window.location.href = 'Switch.html'
-			});
-		});
-		//开关量
-		//新添
-		$('.layui-btn_add_project').click(function() {
-			window.location.href = 'newway.html';
-		});
-		//修改
-		$('body').on('click', '.exl', function() {
-			var td_id = $(this).parents('.buttomname').attr('dataid');
-			var td_state = $(this).parents('.buttomname').attr('datastate');
-			store.set('td_id', td_id);
-			store.set('td_state', td_state);
-			window.location.href = 'exlway.html';
 		});
 		//删除
 		$('body').on('click', '.rem', function() {
-			var td_id = $(this).parents('.buttomname').attr('datamark');
+			var td_id = $(this).parents('.buttomname').attr('dataid');
 			console.log(td_id);
 			layer.open({
-				content: '是否删除该通道',
+				content: '是否删除该井盖',
 				btn: '确定',
 				btn1: function(index, layero) {
 					//按钮【按钮三】的回调
 					$.ajax({
 						type: "POST",
-						url: _http + "/admin/device_management/deletePass",
+						url: _http + "/admin/device_management/deletesensor",
 						dataType: 'json',
 						data: {
-							mark: td_id,
+							id: td_id,
 						},
 						success: function(data) {
 							//console.log(data);
